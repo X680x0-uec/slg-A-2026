@@ -133,11 +133,8 @@
         "*.asset": "yaml",
         "*.meta": "yaml",
         "*.prefab": "yaml",
-<<<<<<< HEAD
-        "*.unity": "yaml",
-=======
-        "*.unity": "yaml"
->>>>>>> cd83f18d3b7b2cb76eee1d2196b766cd84bc659f
+        "<<<<<<<HEAD*.unity": "yaml",
+        "=======*.unity": "yaml>>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659f"
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
@@ -145,10 +142,17 @@
         "*.slnx": "*.csproj"
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     "dotnet.defaultSolution": "slg-A-2026.slnx",
 =======
     "dotnet.defaultSolution": "groupgame-2026.slnx",
 >>>>>>> cd83f18d3b7b2cb76eee1d2196b766cd84bc659f
     "dotnet.enableWorkspaceBasedDevelopment": false
 >>>>>>> a0de9e206fd92e53bc2fa642a527489988e4a018
+=======
+    "<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
+    "=======dotnet.defaultSolution": "groupgame-2026.slnx",
+    ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": false,
+    "dotnet.defaultSolution": "slg-A-2026.slnx"
+>>>>>>> eded1b0b94601664a1534834c7281c794175b3ec
 }
