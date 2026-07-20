@@ -60,21 +60,16 @@
         "*.asset": "yaml",
         "*.meta": "yaml",
         "*.prefab": "yaml",
-<<<<<<< HEAD
-        "*.unity": "yaml",
-=======
-        "*.unity": "yaml"
->>>>>>> cd83f18d3b7b2cb76eee1d2196b766cd84bc659f
+        "<<<<<<<HEAD*.unity": "yaml",
+        "=======*.unity": "yaml>>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659f"
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-<<<<<<< HEAD
-    "dotnet.defaultSolution": "slg-A-2026.slnx",
-=======
-    "dotnet.defaultSolution": "groupgame-2026.slnx",
->>>>>>> cd83f18d3b7b2cb76eee1d2196b766cd84bc659f
-    "dotnet.enableWorkspaceBasedDevelopment": false
+    "<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
+    "=======dotnet.defaultSolution": "groupgame-2026.slnx",
+    ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": false,
+    "dotnet.defaultSolution": "X680x0.slnx"
 }
