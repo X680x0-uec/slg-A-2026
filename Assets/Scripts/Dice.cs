@@ -14,7 +14,7 @@ public class Dice : MonoBehaviour
     {
         int diceValue = Random.Range(1,7);
 
-        Debug.Log($"サイコロを振った　出目: {diceValue}");
+        Debug.Log($"Dice Rolled: : {diceValue}");
         diceText.text = "DICE: " + diceValue.ToString();
         gameManager.OnDiceRolled(diceValue);
     }
