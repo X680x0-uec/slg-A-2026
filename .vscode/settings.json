@@ -60,17 +60,15 @@
         "*.asset": "yaml",
         "*.meta": "yaml",
         "*.prefab": "yaml",
-        "<<<<<<<HEAD*.unity": "yaml",
-        "=======*.unity": "yaml>>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659f"
+        "*.unity": "yaml"
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
-    "=======dotnet.defaultSolution": "groupgame-2026.slnx",
-    ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": {
+    "dotnet.defaultSolution": "groupgame-2026.slnx",
+    "dotnet.enableWorkspaceBasedDevelopment": {
         "files.exclude": {
             "**/.DS_Store": true,
             "**/.git": true,
@@ -132,15 +130,19 @@
             "*.asset": "yaml",
             "*.meta": "yaml",
             "*.prefab": "yaml",
-            "*.unity": "yaml"
+            "yaml=======<<<<<<<HEAD*.unity": "yaml",
+            "=======*.unity": "yaml>>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659f>>>>>>>bab49e514817c08a001a08c53f8b7ce6c7148629"
         },
         "explorer.fileNesting.enabled": true,
         "explorer.fileNesting.patterns": {
             "*.sln": "*.csproj",
             "*.slnx": "*.csproj"
         },
-        "dotnet.defaultSolution": "slg-A-2026.slnx",
-        "dotnet.enableWorkspaceBasedDevelopment": "false>>>>>>>02ff59c1025b9f8f54b957afdeb489d384e5a62a"
-    },
-    "dotnet.defaultSolution": "groupgame-2026.slnx"
+        "<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
+        "false>>>>>>>02ff59c1025b9f8f54b957afdeb489d384e5a62a=======<<<<<<<HEAD<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
+        "=======dotnet.defaultSolution": "groupgame-2026.slnx",
+        "false>>>>>>>a0de9e206fd92e53bc2fa642a527489988e4a018=======<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
+        ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": false,
+        "dotnet.defaultSolution": "slg-A-2026.slnx>>>>>>>eded1b0b94601664a1534834c7281c794175b3ec>>>>>>>bab49e514817c08a001a08c53f8b7ce6c7148629>>>>>>>a2a453234f9dd3ff521f3728d95ec62ac3150522"
+    }
 }
