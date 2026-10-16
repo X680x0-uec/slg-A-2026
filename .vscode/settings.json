@@ -143,6 +143,10 @@
         "=======dotnet.defaultSolution": "groupgame-2026.slnx",
         "false>>>>>>>a0de9e206fd92e53bc2fa642a527489988e4a018=======<<<<<<<HEADdotnet.defaultSolution": "slg-A-2026.slnx",
         ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": false,
+<<<<<<< HEAD
         "dotnet.defaultSolution": "slg-A-2026.slnx>>>>>>>eded1b0b94601664a1534834c7281c794175b3ec>>>>>>>bab49e514817c08a001a08c53f8b7ce6c7148629>>>>>>>a2a453234f9dd3ff521f3728d95ec62ac3150522"
+=======
+        "dotnet.defaultSolution": "slg-A-2026.slnx>>>>>>>eded1b0b94601664a1534834c7281c794175b3ec>>>>>>>bab49e514817c08a001a08c53f8b7ce6c7148629"
+>>>>>>> 0713b6b20a37b1648afe207a5e243ffe02e64639
     }
 }
