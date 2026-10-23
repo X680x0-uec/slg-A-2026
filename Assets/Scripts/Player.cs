@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     private BoardManager boardManager;
 
     [SerializeField]int playerCurrentLocation = 0; //プレイヤーの現在位置
+    public int PlayerCurrentLocation => playerCurrentLocation; // ★外部（GameManager）から現在位置を取得できるようにプロパティを追加
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,7 +34,6 @@ public class Player : MonoBehaviour
         }
 
     
-
         gameManager.OnPlayerMoveComplete();
     }
 
