@@ -442,7 +442,7 @@ MonoBehaviour:
   - position: {x: -12, y: 8, z: 0}
     effect: 0
   - position: {x: -10, y: 8, z: 0}
-    effect: 0
+    effect: 1
   - position: {x: -8, y: 8, z: 0}
     effect: 0
   - position: {x: -6, y: 8, z: 0}
@@ -520,6 +520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   players:
   - {fileID: 1238693681}
+  - {fileID: 0}
   currentTurn: 0
   isWaitingForDice: 1
   boardManager: {fileID: 575294380}
@@ -1339,6 +1340,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1008035921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1974907041740830183
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384905531545865649, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8163565876666296760, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      propertyPath: m_Name
+      value: Card
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7680823579199833425, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+  m_SourcePrefab: {fileID: 100100000, guid: c918a11c3abad6c46a68403cc97d4dc4, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1348,3 +1409,4 @@ SceneRoots:
   - {fileID: 1238693685}
   - {fileID: 1008035921}
   - {fileID: 1723789839}
+  - {fileID: 1974907041740830183}
