@@ -434,64 +434,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardManager
   gridPrefab: {fileID: 4029603860997610514, guid: 9416ad977cfb3704d81d9ceeda239a5b, type: 3}
-  totalGridCount: 27
+  totalGridCount: 50
   gridSpacing: 2
   startPosition: {x: 0, y: 0, z: 0}
-  gridDataList:
-  - position: {x: -20, y: 0, z: 0}
-    effect: 0
-  - position: {x: -18, y: 0, z: 0}
-    effect: 0
-  - position: {x: -16, y: 0, z: 0}
-    effect: 0
-  - position: {x: -14, y: 0, z: 0}
+  specialGrids:
+  - gridIndex: 3
     effect: 1
-  - position: {x: -12, y: 0, z: 0}
-    effect: 0
-  - position: {x: -10, y: 0, z: 0}
-    effect: 0
-  - position: {x: -8, y: 0, z: 0}
-    effect: 0
-  - position: {x: -6, y: 0, z: 0}
-    effect: 0
-  - position: {x: -4, y: 0, z: 0}
-    effect: 0
-  - position: {x: -2, y: 0, z: 0}
-    effect: 0
-  - position: {x: 0, y: 0, z: 0}
-    effect: 0
-  - position: {x: 2, y: 0, z: 0}
-    effect: 0
-  - position: {x: 4, y: 0, z: 0}
-    effect: 0
-  - position: {x: 6, y: 0, z: 0}
-    effect: 0
-  - position: {x: 8, y: 0, z: 0}
-    effect: 0
-  - position: {x: 10, y: 0, z: 0}
-    effect: 0
-  - position: {x: 12, y: 0, z: 0}
-    effect: 0
-  - position: {x: 14, y: 0, z: 0}
-    effect: 0
-  - position: {x: 16, y: 0, z: 0}
-    effect: 0
-  - position: {x: 18, y: 0, z: 0}
-    effect: 0
-  - position: {x: 20, y: 0, z: 0}
-    effect: 0
-  - position: {x: 22, y: 0, z: 0}
-    effect: 0
-  - position: {x: 24, y: 0, z: 0}
-    effect: 0
-  - position: {x: 26, y: 0, z: 0}
-    effect: 0
-  - position: {x: 28, y: 0, z: 0}
-    effect: 0
-  - position: {x: 30, y: 0, z: 0}
-    effect: 0
-  - position: {x: 32, y: 0, z: 0}
-    effect: 0
+  - gridIndex: 12
+    effect: 1
+  - gridIndex: 23
+    effect: 2
 --- !u!1 &589539312
 GameObject:
   m_ObjectHideFlags: 0
