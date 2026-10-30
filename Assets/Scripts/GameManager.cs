@@ -49,4 +49,13 @@ public class GameManager : MonoBehaviour
 
         remainingGridText.text = $"REMAIN: {remainingGrids} ";
     }
+
+    public Player GetCurrentPlayer()
+{
+    if (players != null && players.Length > 0 && currentTurn < players.Length)
+    {
+        return players[currentTurn];
+    }
+    return null;
+}
 }

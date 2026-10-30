@@ -14,7 +14,11 @@ public class Player : MonoBehaviour
     {
         gameManager = Object.FindAnyObjectByType<GameManager>();
         boardManager = Object.FindAnyObjectByType<BoardManager>();
-        transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);
+        // 0番目のマスの位置にプレイヤーを配置
+        if (boardManager != null)
+        {
+            transform.position = boardManager.GetWaypointPosition(0);
+        }
     }
 
     public void Move(int spaces)
@@ -24,16 +28,18 @@ public class Player : MonoBehaviour
 
         playerCurrentLocation += spaces;
 
-        if (playerCurrentLocation >= boardManager.GetTotalWaypoints()-1)
+        int totalWaypoints = boardManager.GetTotalWaypoints();
+        if (playerCurrentLocation >= totalWaypoints - 1) // ゴール（最後のマス = totalWaypoints - 1）に到達または超えた場合
         {
-            transform.position = boardManager.GetWaypointPosition(boardManager.GetTotalWaypoints());
-            Debug.Log("ゴール");
-        }else{
+            playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマス（49番目）に固定
+            transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);
+            Debug.Log("ゴール！");
+        }
+        else
+        {
             transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);
             Debug.Log($"{gameObject.name}が{spaces}マス分移動");
         }
-
-    
         gameManager.OnPlayerMoveComplete();
     }
 

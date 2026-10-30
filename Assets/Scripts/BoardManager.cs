@@ -18,12 +18,17 @@ public class BoardManager : MonoBehaviour
 {
     [Header("マスの見た目")]
     public GameObject gridPrefab; //AssetsのGridSquareを雛型とする
+
+    [Header("自動生成設定")]
+    [SerializeField] private int totalGridCount = 50; // 生成したいマスの合計数
+    [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
+    [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
     
     [Header("マスの座標と種類を入力")]
     public GridData[] gridDataList; //Inspectorタブに入力したマスの座標と種類を取得
 
-
     private Transform[] generatedWaypoints; //Transform型(座標や向きなどを指定する型)を格納する配列を宣言
+    private GridEffect[] generatedGridEffects; // 生成されたマスの効果を保持
 
     void Awake()
     {
@@ -32,16 +37,23 @@ public class BoardManager : MonoBehaviour
 
     private void GenerateBoard()
     {
-        if (gridDataList == null || gridDataList.Length == 0) return;
+        if (gridPrefab == null || totalGridCount <= 0) return;
         
-        generatedWaypoints = new Transform[gridDataList.Length]; //Transform型をマスの数だけ格納可能な配列を作る
-
-        for (int i = 0; i < gridDataList.Length; i++)
+        generatedWaypoints = new Transform[totalGridCount]; //Transform型をマスの数だけ格納可能な配列を作る
+        generatedGridEffects = new GridEffect[totalGridCount];
+        for (int i = 0; i < totalGridCount; i++)
         {
-            Vector3 pos = gridDataList[i].position;
+            Vector3 pos = startPosition + new Vector3(i * gridSpacing, 0, 0);
+            // gridDataListの要素数が足りない場合は安全にNormal扱いにする
+            GridEffect effect = GridEffect.Normal;
+            if (gridDataList != null && i < gridDataList.Length)
+            {
+                effect = gridDataList[i].effect;
+            }
+            generatedGridEffects[i] = effect;
             
             GameObject newGrid = Instantiate(gridPrefab, pos, Quaternion.identity); //gridPrefabオブジェクトのクローンをposの位置にそのままの向きで作る
-            newGrid.name = $"Grid_{i} ({gridDataList[i].effect})";
+            newGrid.name = $"Grid_{i} ({effect})";
             newGrid.transform.SetParent(this.transform); //生成したマスをBoardManagerの子オブジェクトにする
 
             Renderer rend = newGrid.GetComponent<Renderer>();
@@ -51,7 +63,7 @@ public class BoardManager : MonoBehaviour
                 if (gridDataList[i].effect == GridEffect.Advance) rend.material.color = Color.green;
                 if (gridDataList[i].effect == GridEffect.Back) rend.material.color = Color.red;
 
-                if (i == 0 || i == gridDataList.Length - 1) newGrid.transform.localScale = new Vector3(2.2f, 2.2f, 0.1f);
+                if (i == 0 || i == totalGridCount - 1) newGrid.transform.localScale = new Vector3(2.2f, 2.2f, 0.1f);
             }
 
             generatedWaypoints[i] = newGrid.transform;
@@ -64,11 +76,18 @@ public class BoardManager : MonoBehaviour
     {
         if (generatedWaypoints == null || generatedWaypoints.Length == 0) return Vector3.zero;
 
+        // ゴールを超えたら最後のマス（totalGridCount - 1）の位置を返す
         if (index >= generatedWaypoints.Length)
         {
-            return generatedWaypoints[generatedWaypoints.Length - 1].position;
+            index = generatedWaypoints.Length - 1;
         }
-        return generatedWaypoints[index].position;
+
+        if (generatedWaypoints[index] != null)
+        {
+            return generatedWaypoints[index].position;
+        }
+
+        return Vector3.zero;
 
     }
 
@@ -87,8 +106,12 @@ public class BoardManager : MonoBehaviour
 
     public GridEffect GetGridEffect(int index) //Player.csに対してindexマス目の種類(効果)を返す。
     {
-        if (gridDataList == null || index >= gridDataList.Length) return GridEffect.Normal;
-        return gridDataList[index].effect;
+        if (generatedGridEffects == null || index < 0 || index >= generatedGridEffects.Length)  // 配列が未生成、またはインデックスが範囲外の場合は Normal を返す
+        {
+            return GridEffect.Normal;
+        }
+        
+        return generatedGridEffects[index]; // 正しいインデックスの場合は該当するマスの効果を返す
     }
 
 }
