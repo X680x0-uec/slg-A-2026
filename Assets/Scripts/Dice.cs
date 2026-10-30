@@ -12,10 +12,10 @@ public class Dice : MonoBehaviour
 
     public void RollDice()
     {
-        int diceValue = Random.Range(1,7); //サイコロの出目を発生
+        int diceValue = Random.Range(1,7);
 
         Debug.Log($"Dice Rolled: : {diceValue}");
-        diceText.text = "DICE: " + diceValue.ToString(); //出目の表示を変更
+        diceText.text = "DICE: " + diceValue.ToString();
         gameManager.OnDiceRolled(diceValue);
     }
 }
