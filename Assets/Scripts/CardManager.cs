@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public enum CardProp //カードの属性
 {
@@ -8,13 +11,13 @@ public enum CardProp //カードの属性
 }
 
 [System.Serializable]
-public struct CardData //Inspectorタブでマスの座標と種類を指定する。
+public struct CardData
 {
     public CardProp prop;
     public string CardName;
 }
 
-public class CardManager : MonoBehaviour
+public class CardManager : MonoBehaviour, IPointerClickHandler
 {
     [Header("カードの情報")]
     public CardData[] CardDataList;
@@ -22,7 +25,7 @@ public class CardManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        Debug.Log("スタート");
     }
 
     // Update is called once per frame
@@ -30,4 +33,14 @@ public class CardManager : MonoBehaviour
     {
         
     }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("カードがタップされました");
+    }
+
+    //public void OnPointerUp(PointerEventData eventData)
+    //{
+      //  Debug.Log("カードへのタップを終了しました");
+    //}
 }
