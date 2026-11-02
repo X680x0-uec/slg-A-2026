@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2419755231213929547}
   - component: {fileID: 8437346238403444609}
   - component: {fileID: 8036454337805221123}
-  - component: {fileID: -267262635746796976}
   - component: {fileID: -9193452199448910209}
+  - component: {fileID: -404313572527091519}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -80,19 +80,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-267262635746796976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2987417985521418882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cae16933dfc88ea4fbefe64f4edc0bca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardManager
-  CardDataList: []
 --- !u!114 &-9193452199448910209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,6 +136,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-404313572527091519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987417985521418882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d8ff9eadeda7340baf4a7a6cfd4f54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardScript
 --- !u!1 &5232696798443028618
 GameObject:
   m_ObjectHideFlags: 0
