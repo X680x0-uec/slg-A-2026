@@ -3,8 +3,12 @@ using UnityEngine;
 public enum GridEffect //マス目の種類の一覧(効果)
 {
     Normal,
-    Advance,
-    Back
+    Advance,　// 進む
+    Back, // 戻る
+    GetCard, // 通常・疑惑カード獲得
+    ChangeDiceroll, // 出目変化マス
+    RetuenCheatingCard, // イカサマカード復活
+    ForcedCheating // イカサマ強制マス
 }
 
 [System.Serializable]
@@ -12,6 +16,8 @@ public struct SpecialGrid // 座標ではなく「何番目のマスに何の効
 {
     public int gridIndex; // 何番目のマスか
     public GridEffect effect; // マス効果
+    [Tooltip("Advance/Back等の場合に数値（マス数など）を指定")]
+    public int effectValue; // 効果の数値
 }
 
 public class BoardManager : MonoBehaviour
@@ -24,11 +30,12 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
     [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
 
-    [Header("特殊マスの個別設定（任意）")]
+    [Header("特殊マスの個別設定")]
     [SerializeField] private SpecialGrid[] specialGrids; // 効果を変えたいマスだけここに入力
 
     private Transform[] generatedWaypoints; //Transform型(座標や向きなどを指定する型)を格納する配列を宣言
     private GridEffect[] generatedGridEffects; // 生成されたマスの効果を保持
+    private int[] generatedGridValues; // 各マスの効果数値を保持
 
     void Awake()
     {
@@ -41,10 +48,12 @@ public class BoardManager : MonoBehaviour
         
         generatedWaypoints = new Transform[totalGridCount]; //Transform型をマスの数だけ格納可能な配列を作る
         generatedGridEffects = new GridEffect[totalGridCount];
+        generatedGridValues = new int[totalGridCount];
 
         for (int i = 0; i < totalGridCount; i++)　  //  全マスをデフォルトの Normal で初期化
         {
             generatedGridEffects[i] = GridEffect.Normal;
+            generatedGridValues[i] = 0;
         }
 
         if (specialGrids != null)　    // Inspector で指定された特殊マスの効果だけを上書き
@@ -54,6 +63,7 @@ public class BoardManager : MonoBehaviour
                 if (special.gridIndex >= 0 && special.gridIndex < totalGridCount)
                 {
                     generatedGridEffects[special.gridIndex] = special.effect;
+                    generatedGridValues[special.gridIndex] = special.effectValue;
                 }
             }
         }
@@ -73,6 +83,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (currentEffect == GridEffect.Advance) rend.material.color = Color.green;
                 if (currentEffect == GridEffect.Back) rend.material.color = Color.red;
+                if (currentEffect == GridEffect.ChangeDiceroll) rend.material.color = Color.blue;
                 if (i == 0 || i == totalGridCount - 1) newGrid.transform.localScale = new Vector3(2.2f, 2.2f, 0.1f);
             }
 
@@ -122,6 +133,14 @@ public class BoardManager : MonoBehaviour
         }
         
         return generatedGridEffects[index]; // 正しいインデックスの場合は該当するマスの効果を返す
+    }
+
+    public int GetGridEffectValue(int index)  // ★Playerから「移動量」を取得する
+    {
+        if (generatedGridValues == null || index < 0 || index >= generatedGridValues.Length)
+            return 0;
+
+        return generatedGridValues[index];
     }
 
 }

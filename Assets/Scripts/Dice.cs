@@ -12,10 +12,55 @@ public class Dice : MonoBehaviour
 
     public void RollDice()
     {
-        int diceValue = Random.Range(1,7); //サイコロの出目を発生
+        // GameManager から現在のプレイヤー（インスタンス）を取得する
+        Player currentPlayer = gameManager.GetCurrentPlayer();
+        if (currentPlayer == null)
+        {
+            Debug.LogError("現在のプレイヤーを取得できませんでした！");
+            return;
+        }
 
-        Debug.Log($"Dice Rolled: : {diceValue}");
-        diceText.text = "DICE: " + diceValue.ToString(); //出目の表示を変更
-        gameManager.OnDiceRolled(diceValue);
+        int totalValue = 0; // 合計値
+
+        if (currentPlayer.NextDiceType == DiceType.Normal)
+        {
+            int dice1 = Random.Range(1,7); //サイコロの出目を発生
+            int dice2 = Random.Range(1,7);
+            totalValue = dice1 + dice2;
+
+            Debug.Log($"通常ダイス: {dice1} + {dice2} = {totalValue}");
+            if (diceText != null) //出目の表示を変更
+            {
+                diceText.text = $"DICE: {dice1} + {dice2} = {totalValue}";
+            } 
+            gameManager.OnDiceRolled(totalValue);
+        }
+        else if (currentPlayer.NextDiceType == DiceType.Special)
+        {
+            int dice1 = Random.Range(-1,9);
+            int dice2 = Random.Range(-1,9);
+            totalValue = dice1 + dice2;
+
+            Debug.Log($"特殊ダイス: {dice1} + {dice2} = {totalValue}");
+            if (diceText != null) 
+            {
+                diceText.text = $"DICE: {dice1} + {dice2} = {totalValue}";
+            } 
+            gameManager.OnDiceRolled(totalValue);
+            currentPlayer.NextDiceType = DiceType.Normal; // 通常に戻す
+        }
+    }
+    public void AppendEffectText(int effectValue) // マス効果の演出用にテキストを追記するメソッド
+    {
+        if (diceText == null) return;
+
+        if (effectValue > 0)
+        {
+            diceText.text += $" <color=green>+{effectValue}</color>";
+        }
+        else if (effectValue < 0)
+        {
+            diceText.text += $" <color=red>{effectValue}</color>";
+        }
     }
 }
