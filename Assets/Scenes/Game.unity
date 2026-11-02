@@ -517,12 +517,24 @@ MonoBehaviour:
   - gridIndex: 12
     effect: 4
     effectValue: 0
-  - gridIndex: 19
+  - gridIndex: 14
     effect: 1
-    effectValue: 10
-  - gridIndex: 21
+    effectValue: 5
+  - gridIndex: 16
     effect: 2
     effectValue: 3
+  - gridIndex: 18
+    effect: 4
+    effectValue: 0
+  - gridIndex: 19
+    effect: 1
+    effectValue: 3
+  - gridIndex: 21
+    effect: 2
+    effectValue: 1
+  - gridIndex: 23
+    effect: 2
+    effectValue: 1
 --- !u!1 &589539312
 GameObject:
   m_ObjectHideFlags: 0
