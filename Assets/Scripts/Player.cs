@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
             playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマスに固定
             Debug.Log("ゴール！");
             gameManager.OnPlayerMoveComplete();
-            return;
+            yield return null;
         }
 
         transform.position = boardManager.GetWaypointPosition(playerCurrentLocation); // ダイスの出目分の位置へ移動
