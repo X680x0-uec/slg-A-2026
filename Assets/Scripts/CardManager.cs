@@ -48,7 +48,7 @@ public class CardManager : MonoBehaviour
             new Vector3(100,-150,0),
         };
         GameObject[] newCard = new GameObject[3];
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
             newCard[i].transform.SetParent(canvas.transform, false);
