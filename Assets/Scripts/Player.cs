@@ -37,21 +37,24 @@ public class Player : MonoBehaviour
     public void Move(int spaces)
     {
         // 一瞬で移動していた処理をコルーチン呼び出しに変更
-        StartCoroutine(MoveRoutine(spaces));
+        StartCoroutine(MoveRoutine(spaces, triggerEffectOnComplete: true));
     }
 
     // ★ なめらかに移動する処理（コルーチン）
-    private IEnumerator MoveRoutine(int spaces)
+    private IEnumerator MoveRoutine(int spaces, bool triggerEffectOnComplete = false)
     {
         int totalWaypoints = boardManager.GetTotalWaypoints();
+        int stepDir = spaces > 0 ? 1 : -1; // 進む (+1) か 戻る (-1) かの方向
+        int absSpaces = Mathf.Abs(spaces); // 移動マス数の絶対値
 
         // 出目の数だけ1マスずつ進む
-        for (int i = 0; i < spaces; i++)
+        for (int i = 0; i < absSpaces; i++)
         {
-            // すでにゴール（最後のマス）に到達している場合は途中で抜ける
-            if (playerCurrentLocation >= totalWaypoints - 1) break;
+          // ゴール到達またはスタート（0番目）未満にならない安全対策
+            if (stepDir > 0 && playerCurrentLocation >= totalWaypoints - 1) break;
+            if (stepDir < 0 && playerCurrentLocation <= 0) break;
 
-            playerCurrentLocation++;
+            playerCurrentLocation += stepDir;
             Vector3 targetPosition = boardManager.GetWaypointPosition(playerCurrentLocation);
 
             // 目標マスに着くまで毎フレーム少しずつ移動
@@ -74,13 +77,16 @@ public class Player : MonoBehaviour
             yield break;
         }
 
-        transform.position = boardManager.GetWaypointPosition(playerCurrentLocation); // ダイスの出目分の位置へ移動
-        Debug.Log($"{gameObject.name}が{spaces}マス分移動（現在地: {playerCurrentLocation}）");   
+        Debug.Log($"{gameObject.name}が移動完了（現在地: {playerCurrentLocation}）");
 
-        ApplyGridEffect(); //  止まったマスの効果を発動
+        // ダイスによる通常移動の場合のみ、止まったマスの効果を発動
+        if (triggerEffectOnComplete)
+        {
+            yield return StartCoroutine(ApplyGridEffectRoutine());
+        }
     }
 
-    private void ApplyGridEffect()
+    private IEnumerator ApplyGridEffectRoutine()
     {
         GridEffect effect = boardManager.GetGridEffect(playerCurrentLocation); // BoardManagerから現在地のマス内容を取得
         int value = boardManager.GetGridEffectValue(playerCurrentLocation); // マス内容の数値を取得
@@ -89,14 +95,14 @@ public class Player : MonoBehaviour
         {
             case GridEffect.Advance: // +マス
               Debug.Log($"【+マス】{value}マス進む！");
-              playerCurrentLocation += value;
               if (dice != null) dice.AppendEffectText(value);
+              yield return StartCoroutine(MoveRoutine(value,triggerEffectOnComplete: false));
               break;
 
             case GridEffect.Back: // - マス
               Debug.Log($"【-マス】{value}マス戻る！");
-              playerCurrentLocation -= value;
               if (dice != null) dice.AppendEffectText(-value);
+              yield return StartCoroutine(MoveRoutine(-value,triggerEffectOnComplete: false));
               break;
             
             case GridEffect.GetCard:

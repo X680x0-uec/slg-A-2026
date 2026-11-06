@@ -498,7 +498,7 @@ MonoBehaviour:
     effectValue: 5
   - gridIndex: 6
     effect: 1
-    effectValue: 0
+    effectValue: 1
   - gridIndex: 7
     effect: 2
     effectValue: 2
