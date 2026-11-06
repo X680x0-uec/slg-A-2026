@@ -51,11 +51,11 @@ public class GameManager : MonoBehaviour
     }
 
     public Player GetCurrentPlayer()
-{
-    if (players != null && players.Length > 0 && currentTurn < players.Length)
     {
-        return players[currentTurn];
+        if (players != null && players.Length > 0 && currentTurn < players.Length)
+        {
+            return players[currentTurn];
+        }
+        return null;
     }
-    return null;
-}
 }

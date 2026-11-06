@@ -17,30 +17,42 @@ public struct CardData
     public string CardName;
 }
 
-public class CardManager : MonoBehaviour, IPointerClickHandler
+public class CardManager : MonoBehaviour
 {
     [Header("カードの情報")]
     public CardData[] CardDataList;
 
+    [Header("カードの見た目")]
+    public GameObject cardPrefab; //AssetsのCardを雛型とする
+
+    public Canvas canvas;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
         Debug.Log("スタート");
+        GenerateCard();
     }
-
     // Update is called once per frame
     void Update()
     {
         
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    void GenerateCard()
     {
-        Debug.Log("カードがタップされました");
+        Vector3[] card_pos = {
+            new Vector3(-100,-150,0),
+            new Vector3(0,-150,0),
+            new Vector3(100,-150,0),
+        };
+        GameObject[] newCard = new GameObject[3];
+        for (int i = 0; i < 3; i++)
+        {
+            newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
+            newCard[i].transform.SetParent(canvas.transform, false);
+        }
+        Debug.Log("プレファブを生成");
     }
-
-    //public void OnPointerUp(PointerEventData eventData)
-    //{
-      //  Debug.Log("カードへのタップを終了しました");
-    //}
 }
