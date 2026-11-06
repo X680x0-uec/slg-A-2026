@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using System.Collections; // ★ コルーチンを使うために追加
 using UnityEngine;
 
@@ -74,11 +73,7 @@ public class Player : MonoBehaviour
             playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマスに固定
             Debug.Log("ゴール！");
             gameManager.OnPlayerMoveComplete();
-<<<<<<< HEAD
             yield break;
-=======
-            yield return null;
->>>>>>> abefc90711bb08b1896d0b2e1319f42d3e502874
         }
 
         Debug.Log($"{gameObject.name}が移動完了（現在地: {playerCurrentLocation}）");
