@@ -42,9 +42,17 @@ public class CardManager : MonoBehaviour
 
     void GenerateCard()
     {
-        Vector3 pos = new Vector3(0,0,0);
-        GameObject newCard = Instantiate(cardPrefab, pos, Quaternion.identity);
-        newCard.transform.SetParent(canvas.transform, false);
+        Vector3[] card_pos = {
+            new Vector3(-100,-150,0),
+            new Vector3(0,-150,0),
+            new Vector3(100,-150,0),
+        };
+        GameObject[] newCard = new GameObject[3];
+        for (int i = 0; i < 3; i++)
+        {
+            newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
+            newCard[i].transform.SetParent(canvas.transform, false);
+        }
         Debug.Log("プレファブを生成");
     }
 }
