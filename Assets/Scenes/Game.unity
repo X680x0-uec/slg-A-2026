@@ -1033,6 +1033,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  moveSpeed: 8
 --- !u!65 &1238693682
 BoxCollider:
   m_ObjectHideFlags: 0
