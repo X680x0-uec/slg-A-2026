@@ -166,7 +166,7 @@ MonoBehaviour:
   CardDataList:
   - prop: 0
     CardName: 
-  cardPrefab: {fileID: 2987417985521418882, guid: 5fa68cca4189f4c44a41e0af80cd9bca, type: 3}
+  cardPrefab: {fileID: 2073152810}
   canvas: {fileID: 745252547}
 --- !u!1 &164879242
 GameObject:
