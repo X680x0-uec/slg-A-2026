@@ -12,12 +12,6 @@ public class Dice : MonoBehaviour
 
     public void RollDice()
     {
-        // GameManagerがダイス待ち状態（isWaitingForDice == true）でない時は一切受け付けない
-        if (gameManager != null && !gameManager.IsWaitingForDice)
-        {
-            Debug.Log("コマが移動中のため、ダイスは振れません");
-            return;
-        }
         // GameManager から現在のプレイヤー（インスタンス）を取得する
         Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer == null)

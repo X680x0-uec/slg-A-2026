@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum GridEffect //マス目の種類の一覧(効果)
@@ -27,20 +25,12 @@ public class BoardManager : MonoBehaviour
     [Header("マスの見た目")]
     public GameObject gridPrefab; //AssetsのGridSquareを雛型とする
 
-    [Header("盤面生成")]
+    [Header("自動生成設定")]
     [SerializeField] private int totalGridCount = 50; // 生成したいマスの合計数
     [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
     [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
 
-    [Header("自動生成設定")]
-    [SerializeField] private bool useRandomMode = true;  // ★ trueなら自動ランダム配置、falseなら下のSpecialGrid手動設定を使う
-    [SerializeField] private int advanceCount = 6;       // Advance (+マス) の出現数
-    [SerializeField] private int backCount = 5;          // Back (-マス) の出現数
-    [SerializeField] private int changeDiceRollCount = 3;    // ChangeDiceroll の出現数
-    [SerializeField] private int minEffectValue = 3;     // + / - マスの最小歩数
-    [SerializeField] private int maxEffectValue = 3;     // + / - マスの最大歩数
-
-    [Header("特殊マスの個別設定（手動設定用）")]
+    [Header("特殊マスの個別設定")]
     [SerializeField] private SpecialGrid[] specialGrids; // 効果を変えたいマスだけここに入力
 
     private Transform[] generatedWaypoints; //Transform型(座標や向きなどを指定する型)を格納する配列を宣言
@@ -66,12 +56,7 @@ public class BoardManager : MonoBehaviour
             generatedGridValues[i] = 0;
         }
 
-        // マス効果の配置（自動モード or 手動モード）
-        if (useRandomMode)
-        {
-            AssignRandomEffects();
-        }
-        else if (specialGrids != null)
+        if (specialGrids != null)　    // Inspector で指定された特殊マスの効果だけを上書き
         {
             foreach (var special in specialGrids)
             {
@@ -103,51 +88,9 @@ public class BoardManager : MonoBehaviour
             }
 
             generatedWaypoints[i] = newGrid.transform;
-        }
-    }
-
-    private void AssignRandomEffects()
-    {
-        int playableSquares = totalGridCount - 2; // スタート(0)とゴール(最後)を除いたマス数
-        if (playableSquares <= 0) return;
-
-        List<GridEffect> effectPool = new List<GridEffect>();
-
-        for (int i = 0; i < advanceCount; i++) effectPool.Add(GridEffect.Advance);
-        for (int i = 0; i < backCount; i++) effectPool.Add(GridEffect.Back);
-        for (int i = 0; i < changeDiceRollCount; i++) effectPool.Add(GridEffect.ChangeDiceroll);
-
-        while (effectPool.Count < playableSquares)
-        {
-            effectPool.Add(GridEffect.Normal);
+         
         }
 
-        if (effectPool.Count > playableSquares)
-        {
-            effectPool = effectPool.GetRange(0, playableSquares);
-        }
-
-        // プールをシャッフル
-        for (int i = effectPool.Count - 1; i > 0; i--)
-        {
-            int randomIndex = Random.Range(0, i + 1);
-            GridEffect temp = effectPool[i];
-            effectPool[i] = effectPool[randomIndex];
-            effectPool[randomIndex] = temp;
-        }
-
-        // 1番目〜ゴール手前のマスに順次適用
-        for (int i = 0; i < playableSquares; i++)
-        {
-            int gridIndex = i + 1;
-            GridEffect effect = effectPool[i];
-            generatedGridEffects[gridIndex] = effect;
-
-            if (effect == GridEffect.Advance || effect == GridEffect.Back)
-            {
-                generatedGridValues[gridIndex] = Random.Range(minEffectValue, maxEffectValue + 1);
-            }
-        }
     }
 
     public Vector3 GetWaypointPosition(int index) //(主に)Player.csに対してindexマス目の座標を返す
