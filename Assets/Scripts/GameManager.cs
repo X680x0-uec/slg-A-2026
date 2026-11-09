@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int currentTurn = 0; //誰のターンか
     [SerializeField] private bool isWaitingForDice = true;
     public bool IsWaitingForDice => isWaitingForDice; // ダイス側から「今振れる状態か？」を確認できるようにプロパティを追加
+
     
     [Header("参照")]
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
