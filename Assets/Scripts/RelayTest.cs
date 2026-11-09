@@ -37,6 +37,7 @@ public class RelayTest : MonoBehaviour
                 );
 
             Debug.Log("Joincode =" + joinCode.ToString());
+            joinCodeInput.text = joinCode;
             NetworkManager.Singleton.StartHost();
         }
         catch (RelayServiceException e)
