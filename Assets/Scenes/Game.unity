@@ -486,6 +486,12 @@ MonoBehaviour:
   totalGridCount: 50
   gridSpacing: 2
   startPosition: {x: 0, y: 0, z: 0}
+  useRandomMode: 1
+  advanceCount: 6
+  backCount: 5
+  changeDiceRollCount: 3
+  minEffectValue: 3
+  maxEffectValue: 3
   specialGrids:
   - gridIndex: 3
     effect: 4
@@ -568,10 +574,7 @@ MonoBehaviour:
   - {fileID: 1238693681}
   - {fileID: 1015246288}
   - {fileID: 1231956524}
-  playerCameras:
-  - {fileID: 1959135308}
-  - {fileID: 894584934}
-  - {fileID: 1162415207}
+  playerCameras: []
   currentTurn: 0
   isWaitingForDice: 1
   boardManager: {fileID: 575294380}
@@ -988,7 +991,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 894584933}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!4 &894584939
 Transform:
   m_ObjectHideFlags: 0
@@ -1457,7 +1460,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162415206}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!4 &1162415212
 Transform:
   m_ObjectHideFlags: 0
