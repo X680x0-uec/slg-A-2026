@@ -59,8 +59,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateActiveCamera()
     {
+        Debug.Log(playerCameras.Length);
         if (playerCameras == null || playerCameras.Length == 0) return;
-
+        
         for (int i = 0; i < playerCameras.Length; i++)
         {
             if (playerCameras[i] != null)

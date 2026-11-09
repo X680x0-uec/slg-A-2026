@@ -574,7 +574,10 @@ MonoBehaviour:
   - {fileID: 1238693681}
   - {fileID: 1015246288}
   - {fileID: 1231956524}
-  playerCameras: []
+  playerCameras:
+  - {fileID: 1959135308}
+  - {fileID: 894584934}
+  - {fileID: 1162415207}
   currentTurn: 0
   isWaitingForDice: 1
   boardManager: {fileID: 575294380}
