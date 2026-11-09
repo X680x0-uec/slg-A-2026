@@ -17,7 +17,7 @@ public struct CardData
     public string CardName;
 }
 
-public class CardManager : MonoBehaviour
+public class CardManager : MonoBehaviour, IPointerClickHandler
 {
     [Header("カードの情報")]
     public CardData[] CardDataList;
@@ -34,5 +34,13 @@ public class CardManager : MonoBehaviour
         
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("カードがタップされました");
+    }
 
+    //public void OnPointerUp(PointerEventData eventData)
+    //{
+      //  Debug.Log("カードへのタップを終了しました");
+    //}
 }
