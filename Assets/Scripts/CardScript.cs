@@ -22,7 +22,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (gameManager.isWaitingForDice) return; // サイコロが振られてないとき終了する
+        if (gameManager.IsWaitingForDice) return; // サイコロが振られてないとき終了する
 
         Debug.Log("カードがタップされました");
         Debug.Log(DiceValue);
