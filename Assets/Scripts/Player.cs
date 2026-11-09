@@ -47,13 +47,15 @@ public class Player : MonoBehaviour
         int absSpaces = Mathf.Abs(spaces); // 移動マス数の絶対値
 
         // 出目の数だけ1マスずつ進む
-        for (int i = 0; i < absSpaces; i++)
+        for (int i = 0; i < Mathf.Abs(spaces); i++)
         {
           // ゴール到達またはスタート（0番目）未満にならない安全対策
             if (stepDir > 0 && playerCurrentLocation >= totalWaypoints - 1) break;
             if (stepDir < 0 && playerCurrentLocation <= 0) break;
 
-            playerCurrentLocation += stepDir;
+            if (spaces > 0) playerCurrentLocation++;
+            else playerCurrentLocation--;
+            
             Vector3 targetPosition = boardManager.GetWaypointPosition(playerCurrentLocation);
 
             // 目標マスに着くまで毎フレーム少しずつ移動

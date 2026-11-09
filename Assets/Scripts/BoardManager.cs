@@ -60,7 +60,7 @@ public class BoardManager : MonoBehaviour
         generatedGridEffects = new GridEffect[totalGridCount];
         generatedGridValues = new int[totalGridCount];
 
-        for (int i = 0; i < totalGridCount; i++)　  //  全マスをデフォルトの Normal で初期化
+        for (int i = 0; i < totalGridCount; i++)    //  全マスをデフォルトの Normal で初期化
         {
             generatedGridEffects[i] = GridEffect.Normal;
             generatedGridValues[i] = 0;
