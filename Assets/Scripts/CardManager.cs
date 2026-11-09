@@ -27,20 +27,13 @@ public class CardManager : MonoBehaviour
 
     public Canvas canvas;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-        Debug.Log("スタート");
-        GenerateCard();
-    }
     // Update is called once per frame
     void Update()
     {
         
     }
 
-    void GenerateCard()
+    public void GenerateCard()
     {
         Vector3[] card_pos = {
             new Vector3(-100,-150,0),
@@ -48,7 +41,7 @@ public class CardManager : MonoBehaviour
             new Vector3(100,-150,0),
         };
         GameObject[] newCard = new GameObject[3];
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
             newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
             newCard[i].transform.SetParent(canvas.transform, false);

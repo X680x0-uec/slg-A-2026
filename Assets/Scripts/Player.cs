@@ -46,12 +46,14 @@ public class Player : MonoBehaviour
         int totalWaypoints = boardManager.GetTotalWaypoints();
 
         // 出目の数だけ1マスずつ進む
-        for (int i = 0; i < spaces; i++)
+        for (int i = 0; i < Mathf.Abs(spaces); i++)
         {
             // すでにゴール（最後のマス）に到達している場合は途中で抜ける
             if (playerCurrentLocation >= totalWaypoints - 1) break;
 
-            playerCurrentLocation++;
+            if (spaces > 0) playerCurrentLocation++;
+            else playerCurrentLocation--;
+            
             Vector3 targetPosition = boardManager.GetWaypointPosition(playerCurrentLocation);
 
             // 目標マスに着くまで毎フレーム少しずつ移動

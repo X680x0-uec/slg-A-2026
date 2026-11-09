@@ -5,21 +5,29 @@ using UnityEngine.EventSystems;
 
 public class CardScript : MonoBehaviour, IPointerClickHandler
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private GameManager gameManager;
+
+    static int DiceValue;   //Diceから受け取った値
+
     void Start()
     {
-        
+        gameManager = FindAnyObjectByType<GameManager>();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    //Diceが振られたときに呼び出され、値が更新される
+    public void saveDiceValue(int diceValue)
     {
-        
+        DiceValue = diceValue;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (gameManager.isWaitingForDice) return; // サイコロが振られてないとき終了する
+
         Debug.Log("カードがタップされました");
+        Debug.Log(DiceValue);
+        gameManager.GetCurrentPlayer().Move(DiceValue);
+        //players[gameManager.currentTurn].Move(DiceValue);
     }
 
     //public void OnPointerUp(PointerEventData eventData)
