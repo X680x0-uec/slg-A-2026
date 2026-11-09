@@ -11,16 +11,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private int currentTurn = 0; // 誰のターンか
     [SerializeField] private bool isWaitingForDice = true;
+    public bool IsWaitingForDice => isWaitingForDice; // ダイス側から「今振れる状態か？」を確認できるようにプロパティを追加
+
     
     [Header("参照")]
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
     [SerializeField] private TextMeshProUGUI remainingGridText; // 残りマス数表示用テキスト
+
+    [SerializeField] private CardManager cardManager;    //カードを生成
 
     void Start()
     {
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
         UpdateActiveCamera(); // ゲーム開始時のカメラ設定
         UpdateRemainingGridUI();
+        cardManager.GenerateCard();             //カードを配る
     }
 
     public void OnDiceRolled(int diceValue)
@@ -30,7 +35,9 @@ public class GameManager : MonoBehaviour
         isWaitingForDice = false; // 二重に振られないようにロック
         Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
 
-        players[currentTurn].Move(diceValue);
+        //サイコロ振ったらじゃなくてカードを押したら動いてほしい
+        //players[currentTurn].Move(diceValue);
+
     }
 
     public void OnPlayerMoveComplete()
