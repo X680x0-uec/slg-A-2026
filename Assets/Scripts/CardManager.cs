@@ -78,11 +78,11 @@ public class CardManager : MonoBehaviour
                 CardScript script = newCard[i].GetComponent<CardScript>();
                 if (script != null)
                 {
-                    script.SetCardId(random); // このカードは何番のカードか覚えさせる
+                    script.SetCard(random); // このカードは何番のカードか覚えさせる
                 }
 
                 destroyList.Add(newCard[i]);    //一括で消去できるように全てリストに入れておく
-                cardScript.SetCard(random);     //カードの見た目を設定
+                script.SetCard(random);     //カードの見た目を設定
                 
                 // 作ったカードをそのプレイヤーのリストに覚えさせる
                 targetPlayer.MyCards.Add(newCard[i]);
@@ -110,7 +110,7 @@ public class CardManager : MonoBehaviour
         CardScript script = addCard.GetComponent<CardScript>();
         if (script != null)
         {
-            script.SetCardId(random);
+            script.SetCard(random);
         }
 
         // 踏んだプレイヤーだけのリストに＋1枚追加
