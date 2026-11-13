@@ -38,6 +38,8 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private int backCount = 5;          // Back (-マス) の出現数
     [SerializeField] private int changeDiceRollCount = 3;    // ChangeDiceroll の出現数
     [SerializeField] private int getCardCount = 3; // GetCard の出現数
+    [SerializeField] private int returnCheatingCardCount = 2; // RetuenCheatingCard の出現数
+    [SerializeField] private int forcedCheatingCount = 3; // ForcedCheating の出現数
     [SerializeField] private int minEffectValue = 3;     // + / - マスの最小歩数
     [SerializeField] private int maxEffectValue = 3;     // + / - マスの最大歩数
 
@@ -101,6 +103,8 @@ public class BoardManager : MonoBehaviour
                 if (currentEffect == GridEffect.Back) rend.material.color = Color.red;
                 if (currentEffect == GridEffect.ChangeDiceroll) rend.material.color = Color.blue;
                 if (currentEffect == GridEffect.GetCard) rend.material.color = Color.yellow;
+                if (currentEffect == GridEffect.RetuenCheatingCard) rend.material.color = Color.pink;
+                if (currentEffect == GridEffect.ForcedCheating) rend.material.color = Color.purple;
                 if (i == 0 || i == totalGridCount - 1) newGrid.transform.localScale = new Vector3(2.2f, 2.2f, 0.1f);
             }
 
@@ -119,6 +123,8 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < backCount; i++) effectPool.Add(GridEffect.Back);
         for (int i = 0; i < changeDiceRollCount; i++) effectPool.Add(GridEffect.ChangeDiceroll);
         for (int i = 0; i < getCardCount; i++) effectPool.Add(GridEffect.GetCard);
+        for (int i = 0; i < returnCheatingCardCount; i++) effectPool.Add(GridEffect.RetuenCheatingCard);
+        for (int i = 0; i < forcedCheatingCount; i++) effectPool.Add(GridEffect.ForcedCheating);
 
         while (effectPool.Count < playableSquares)
         {

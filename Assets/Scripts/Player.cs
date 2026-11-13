@@ -124,9 +124,11 @@ public class Player : MonoBehaviour
               break;
 
             case GridEffect.RetuenCheatingCard: // イカサマカード復活(未実装)
+              Debug.Log("【イカサマカード復活マス】使用済みイカサマカードが1枚復活！");
               break;
 
             case GridEffect.ForcedCheating: // イカサマ強制使用(未実装)
+              Debug.Log("【イカサマ強制使用マス】次のターンはイカサマカードを必ず使わなければならない！");
               break;
         }
 
