@@ -11,7 +11,6 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     private int cardId; // リストの添え字（0~4:通常カード)
 
     public static int DiceValue;   //Diceから受け取った値
-    private GameManager gameManager;
     private CardManager cardManager;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text effects;
