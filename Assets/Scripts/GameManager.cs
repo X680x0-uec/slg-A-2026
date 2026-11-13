@@ -121,14 +121,4 @@ public class GameManager : MonoBehaviour
         int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
         currentPlayer.Move(finalSteps);
     }
-
-    // GameManager.cs にテスト用として一時追加（UIボタンができたら消して良い）
-    void Update()
-    {
-        // サイコロを振ったあと、スペースキーを押したら移動実行
-        if (!isWaitingForDice && Input.GetKeyDown(KeyCode.Space))
-        {
-            ExecutePlayerMove();
-        }
-    }
 }
