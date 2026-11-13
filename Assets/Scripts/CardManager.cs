@@ -28,22 +28,44 @@ public class CardManager : MonoBehaviour
 
     public Canvas canvas;
 
+    public List<GameObject> destroyList = new List<GameObject>();  //全消去するために生成した瞬間にこのリストに入れる
+
     public void GenerateCard()
     {
         int length = cardData.CardDataList.Count;   //カードの種類の数
-        int random;             //乱数を
-        int[] already = new int[length];
+        int[] already = new int[length];            //すでに出た番号（ダブらないように）
+        int random;                                 //乱数を格納
+
         GameObject[] newCard = new GameObject[3];
         Vector3[] card_pos = {
             new Vector3(-100,-150,0),
             new Vector3(0,-150,0),
             new Vector3(100,-150,0),
         };
+        
         for (int i = 0; i < 3; i++)
         {
-            random = Random.Range(0, length); //ランダムなカード番号を生成
+            do
+            {
+                random = Random.Range(0, length);   //ランダムなカード番号を生成
+                bool flg = false;                   //trueになったらやり直し
+                for (int j = 0; j < already.Length; j++)
+                {
+                    if (random == already[j])       //もし被ったらやり直し
+                    {
+                        flg = true;
+                        break;
+                    }
+                }
+                if (!flg)   //被んなかったとき
+                {
+                    already[i] = random;
+                    break;  //ループ抜け出す
+                }
+            } while (true);
             newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
             newCard[i].transform.SetParent(canvas.transform, false);
+            destroyList.Add(newCard[i]);
         }
         Debug.Log("プレファブを生成");
     }

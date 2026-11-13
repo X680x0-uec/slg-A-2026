@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
         isWaitingForDice = true;
         UpdateRemainingGridUI();
+        cardManager.GenerateCard();             //カードを配る
     }
 
     /// <summary>
