@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [Header("参照")]
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
     [SerializeField] private TextMeshProUGUI remainingGridText; // 残りマス数表示用テキスト
+    [SerializeField] private TextMeshProUGUI otherRemainingGridText;
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
@@ -48,6 +49,11 @@ public class GameManager : MonoBehaviour
         currentTurn = (currentTurn + 1) % players.Length;
 
         UpdateActiveCamera(); // ターン交代時にカメラ切り替え
+
+        if (cardManager != null)
+        {
+            cardManager.UpdateCardVisibility();
+        }
 
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
         isWaitingForDice = true;
@@ -90,6 +96,19 @@ public class GameManager : MonoBehaviour
         if (remainingGrids < 0) remainingGrids = 0;
 
         remainingGridText.text = $"P{currentTurn + 1} REMAIN: {remainingGrids}";
+
+        
+        if (otherRemainingGridText != null)
+        {
+            string otherDisplay = "";
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (i == currentTurn) continue; 
+                int otherRemain = Mathf.Max(0, (totalWaypoints - 1) - players[i].PlayerCurrentLocation);
+                otherDisplay += $"P{i + 1} REMAIN: {otherRemain} ";
+            }
+            otherRemainingGridText.text = otherDisplay;
+        }
     }
 
     public Player GetCurrentPlayer()

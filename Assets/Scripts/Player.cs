@@ -1,4 +1,5 @@
 using System.Collections; // ★ コルーチンを使うために追加
+using System.Collections.Generic; 
 using UnityEngine;
 
 public enum DiceType // ダイスの種類を定義
@@ -17,6 +18,8 @@ public class Player : MonoBehaviour
     [SerializeField]int playerCurrentLocation = 0; //プレイヤーの現在位置
     public int PlayerCurrentLocation => playerCurrentLocation; // ★外部（GameManager）から現在位置を取得できるようにプロパティを追加
     public DiceType NextDiceType { get; set; } = DiceType.Normal; // 次に振るダイスの種類(通常はNormal)
+    private List<GameObject> myCards = new List<GameObject>();  // プレイヤー個別の手札リスト
+    public List<GameObject> MyCards => myCards;
 
     [SerializeField] private float moveSpeed = 8f; // ★ なめらかな移動速度（お好みで調整）
 
@@ -106,8 +109,13 @@ public class Player : MonoBehaviour
               yield return StartCoroutine(MoveRoutine(-value,triggerEffectOnComplete: false));
               break;
             
-            case GridEffect.GetCard:
-              // 通常・疑惑カード獲得（未実装）
+            case GridEffect.GetCard:   // 通常・疑惑カード獲得
+              Debug.Log("【カード獲得マス】手札が1枚増える！");
+              CardManager cardManager = Object.FindAnyObjectByType<CardManager>();
+              if (cardManager != null)
+              {
+                cardManager.DrawNormalOrSuspicionCard(this); // ★ 「this（自分自身）」を渡す！
+              }
               break;
             
             case GridEffect.ChangeDiceroll: // 出目変化マス 
