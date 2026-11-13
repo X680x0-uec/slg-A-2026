@@ -49,6 +49,11 @@ public class GameManager : MonoBehaviour
 
         UpdateActiveCamera(); // ターン交代時にカメラ切り替え
 
+        if (cardManager != null)
+        {
+            cardManager.UpdateCardVisibility();
+        }
+
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
         isWaitingForDice = true;
         UpdateRemainingGridUI();
