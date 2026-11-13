@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae22e73bf8330a40bfdf5a39f888fdf, type: 3}
+  m_Name: CardData
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  CardDataList:
+  - Name: "\u51FA\u76EE\u6539\u7AC4"
+    isUsed: 0
+    PulsTurn: 0
+    MinusTurn: 0
+    Explain: "\u672C\u6765\u306E\u51FA\u76EE\u3092\xB110\u306E\u7BC4\u56F2\u3067\u597D\u304D\u306A\u5024\u306B\u5909\u66F4\u3059\u308B"
+  - Name: 
+    isUsed: 0
+    PulsTurn: 0
+    MinusTurn: 0
+    Explain: 
+  - Name: 
+    isUsed: 0
+    PulsTurn: 0
+    MinusTurn: 0
+    Explain: 
+  - Name: 
+    isUsed: 0
+    PulsTurn: 0
+    MinusTurn: 0
+    Explain: 
+  - Name: 
+    isUsed: 0
+    PulsTurn: 0
+    MinusTurn: 0
+    Explain: 

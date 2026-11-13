@@ -34,7 +34,6 @@ public class Dice : MonoBehaviour
             int dice1 = Random.Range(1,7); //サイコロの出目を発生
             int dice2 = Random.Range(1,7);
             totalValue = dice1 + dice2;
-            totalValue = 3;
 
             Debug.Log($"通常ダイス: {dice1} + {dice2} = {totalValue}");
             if (diceText != null) //出目の表示を変更
@@ -50,7 +49,6 @@ public class Dice : MonoBehaviour
             int dice1 = Random.Range(-1,9);
             int dice2 = Random.Range(-1,9);
             totalValue = dice1 + dice2;
-            totalValue = -2;
 
             Debug.Log($"特殊ダイス: {dice1} + {dice2} = {totalValue}");
             if (diceText != null) 
