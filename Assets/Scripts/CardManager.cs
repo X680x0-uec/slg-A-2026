@@ -35,11 +35,15 @@ public class CardManager : MonoBehaviour
         if (gameManager == null) gameManager = Object.FindAnyObjectByType<GameManager>();
     }
 
+    public List<GameObject> destroyList = new List<GameObject>();  //全消去するために生成した瞬間にこのリストに入れる
+
     public void GenerateCard()
     {
         int length = cardData.CardDataList.Count;   //カードの種類の数
-        int random;             //乱数を
-        int[] already = new int[length];
+        int[] already = new int[length];            //すでに出た番号（ダブらないように）
+        int random;                                 //乱数を格納
+
+        GameObject[] newCard = new GameObject[3];
         Vector3[] card_pos = {
             new Vector3(-100,-150,0),
             new Vector3(0,-150,0),
@@ -48,11 +52,27 @@ public class CardManager : MonoBehaviour
         for (int p = 0; p < gameManager.players.Length; p++)
         {
             Player targetPlayer = gameManager.players[p];
-            GameObject[] newCard = new GameObject[3];
-
+            
             for (int i = 0; i < 3; i++)
             {
-                random = Random.Range(0, length); //ランダムなカード番号を生成
+                do
+                {
+                    random = Random.Range(0, length);   //ランダムなカード番号を生成
+                    bool flg = false;                   //trueになったらやり直し
+                    for (int j = 0; j < already.Length; j++)
+                    {
+                        if (random == already[j])       //もし被ったらやり直し
+                        {
+                            flg = true;
+                            break;
+                        }
+                    }
+                    if (!flg)   //被んなかったとき
+                    {
+                        already[i] = random;
+                        break;  //ループ抜け出す
+                    }
+                } while (true);
                 newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
                 newCard[i].transform.SetParent(canvas.transform, false);
                 CardScript script = newCard[i].GetComponent<CardScript>();
@@ -61,11 +81,14 @@ public class CardManager : MonoBehaviour
                     script.SetCardId(random); // このカードは何番のカードか覚えさせる
                 }
 
+                destroyList.Add(newCard[i]);    //一括で消去できるように全てリストに入れておく
+                cardScript.SetCard(random);     //カードの見た目を設定
+                
                 // 作ったカードをそのプレイヤーのリストに覚えさせる
                 targetPlayer.MyCards.Add(newCard[i]);
             }
         }
-        UpdateCardVisibility();
+        //UpdateCardVisibility();
         Debug.Log("プレファブを生成");
     }
 
@@ -94,12 +117,12 @@ public class CardManager : MonoBehaviour
         player.MyCards.Add(addCard);
 
         // 表示と並べ順を更新（そのプレイヤーだけ4枚になる）
-        UpdateCardVisibility();
+        //UpdateCardVisibility();
     }
 
     public void UpdateCardVisibility()  // 現在のターンのプレイヤーの手札だけを表示し、枚数に合わせて横に並べる
     {
-        if (gameManager == null) return;
+        /*if (gameManager == null) return;
         Player currentPlayer = gameManager.GetCurrentPlayer();
 
         for (int p = 0; p < gameManager.players.Length; p++)
@@ -120,6 +143,6 @@ public class CardManager : MonoBehaviour
                     cardObj.transform.localPosition = new Vector3(-100 + (i * 100), -150, 0);
                 }
             }
-        }
+        }*/
     }
 }

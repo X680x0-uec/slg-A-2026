@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class CardScript : MonoBehaviour, IPointerClickHandler
 {
@@ -10,20 +11,22 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     private int cardId; // リストの添え字（0~4:通常カード)
 
     public static int DiceValue;   //Diceから受け取った値
+    private GameManager gameManager;
+    private CardManager cardManager;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text effects;
+
 
     void Start()
     {
         gameManager = FindAnyObjectByType<GameManager>();
+        cardManager = FindAnyObjectByType<CardManager>();
     }
     
     //Diceが振られたときに呼び出され、値が更新される
     public void saveDiceValue(int diceValue)
     {
         DiceValue = diceValue;
-    }
-    public void SetCardId(int id)
-    {
-        cardId = id;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -61,10 +64,28 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 break;
         }
         // ここで手札からカードを消す
+        Debug.Log("カードがタップされました");
+        Debug.Log("カードID：" + cardId);
+        gameManager.GetCurrentPlayer().Move(DiceValue);
+        //players[gameManager.currentTurn].Move(DiceValue);
+        foreach (GameObject card in cardManager.destroyList)
+        {
+            if (card != null)
+            {
+                Destroy(card);    //カードを削除
+            }
+        }
+        cardManager.destroyList.Clear();
     }
 
     //public void OnPointerUp(PointerEventData eventData)
     //{
       //  Debug.Log("カードへのタップを終了しました");
     //}
+
+    public void SetCard(int id)
+    {
+        cardId = id;    //カードIDを受け取る
+        nameText.text = cardData.CardDataList[id].CardName;
+    }
 }
