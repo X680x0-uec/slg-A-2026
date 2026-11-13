@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using NUnit.Framework;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -118,5 +120,20 @@ public class GameManager : MonoBehaviour
             return players[currentTurn];
         }
         return null;
+    }
+    public void ExecutePlayerMove()
+    {
+        if (isWaitingForDice) return;
+
+        Player currentPlayer = GetCurrentPlayer();
+
+        if (currentPlayer.isStayAction) // もし通常カード③「移動停止」が使われていた場合、止まっていたマス効果を発動
+        {
+            currentPlayer.StayAndTriggerEffect();
+            return;
+        }
+
+        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
+        currentPlayer.Move(finalSteps);
     }
 }
