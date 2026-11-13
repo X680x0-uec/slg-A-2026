@@ -52,7 +52,6 @@ public class CardManager : MonoBehaviour
         for (int p = 0; p < gameManager.players.Length; p++)
         {
             Player targetPlayer = gameManager.players[p];
-            GameObject[] newCard = new GameObject[3];
             
             for (int i = 0; i < 3; i++)
             {
@@ -84,7 +83,7 @@ public class CardManager : MonoBehaviour
                 targetPlayer.MyCards.Add(newCard[i]);
             }
         }
-        UpdateCardVisibility();
+        //UpdateCardVisibility();
         Debug.Log("プレファブを生成");
     }
 
@@ -107,12 +106,12 @@ public class CardManager : MonoBehaviour
         player.MyCards.Add(addCard);
 
         // 表示と並べ順を更新（そのプレイヤーだけ4枚になる）
-        UpdateCardVisibility();
+        //UpdateCardVisibility();
     }
 
     public void UpdateCardVisibility()  // 現在のターンのプレイヤーの手札だけを表示し、枚数に合わせて横に並べる
     {
-        if (gameManager == null) return;
+        /*if (gameManager == null) return;
         Player currentPlayer = gameManager.GetCurrentPlayer();
 
         for (int p = 0; p < gameManager.players.Length; p++)
@@ -133,6 +132,6 @@ public class CardManager : MonoBehaviour
                     cardObj.transform.localPosition = new Vector3(-100 + (i * 100), -150, 0);
                 }
             }
-        }
+        }*/
     }
 }
