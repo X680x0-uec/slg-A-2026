@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class CardScript : MonoBehaviour, IPointerClickHandler
 {
+    [SerializeField] CardData cardData;
     [SerializeField] private GameManager gameManager;
 
     static int DiceValue;   //Diceから受け取った値
