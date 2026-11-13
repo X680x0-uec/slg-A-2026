@@ -13,28 +13,28 @@ MonoBehaviour:
   m_Name: CardData
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   CardDataList:
-  - Name: "\u51FA\u76EE\u6539\u7AC4"
+  - cardName: "\u3042"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: "\u672C\u6765\u306E\u51FA\u76EE\u3092\xB110\u306E\u7BC4\u56F2\u3067\u597D\u304D\u306A\u5024\u306B\u5909\u66F4\u3059\u308B"
-  - Name: 
+    explain: 
+  - cardName: "\u3044"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    explain: 
+  - cardName: "\u3046"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    explain: 
+  - cardName: "\u3048"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    explain: 
+  - cardName: "\u304A"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
+    explain: 
