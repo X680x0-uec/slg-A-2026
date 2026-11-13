@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using NUnit.Framework;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -103,5 +105,30 @@ public class GameManager : MonoBehaviour
             return players[currentTurn];
         }
         return null;
+    }
+    public void ExecutePlayerMove()
+    {
+        if (isWaitingForDice) return;
+
+        Player currentPlayer = GetCurrentPlayer();
+
+        if (currentPlayer.isStayAction) // もし通常カード③「移動停止」が使われていた場合、止まっていたマス効果を発動
+        {
+            currentPlayer.StayAndTriggerEffect();
+            return;
+        }
+
+        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
+        currentPlayer.Move(finalSteps);
+    }
+
+    // GameManager.cs にテスト用として一時追加（UIボタンができたら消して良い）
+    void Update()
+    {
+        // サイコロを振ったあと、スペースキーを押したら移動実行
+        if (!isWaitingForDice && Input.GetKeyDown(KeyCode.Space))
+        {
+            ExecutePlayerMove();
+        }
     }
 }

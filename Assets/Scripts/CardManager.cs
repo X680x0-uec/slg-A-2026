@@ -55,6 +55,11 @@ public class CardManager : MonoBehaviour
                 random = Random.Range(0, length); //ランダムなカード番号を生成
                 newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
                 newCard[i].transform.SetParent(canvas.transform, false);
+                CardScript script = newCard[i].GetComponent<CardScript>();
+                if (script != null)
+                {
+                    script.SetCardId(random); // このカードは何番のカードか覚えさせる
+                }
 
                 // 作ったカードをそのプレイヤーのリストに覚えさせる
                 targetPlayer.MyCards.Add(newCard[i]);
@@ -78,6 +83,12 @@ public class CardManager : MonoBehaviour
 
         GameObject addCard = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
         addCard.transform.SetParent(canvas.transform, false);
+
+        CardScript script = addCard.GetComponent<CardScript>();
+        if (script != null)
+        {
+            script.SetCardId(random);
+        }
 
         // 踏んだプレイヤーだけのリストに＋1枚追加
         player.MyCards.Add(addCard);
