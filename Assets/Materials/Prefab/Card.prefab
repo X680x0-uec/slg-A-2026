@@ -120,7 +120,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 8036454337805221123}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -149,7 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardScript
   cardData: {fileID: 11400000, guid: fdb49f8d30405614db76ee02d1851450, type: 2}
-  gameManager: {fileID: 0}
+  nameText: {fileID: 6747444029741682357}
+  effects: {fileID: 0}
 --- !u!1 &5232696798443028618
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class CardScript : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] CardData cardData;
     private GameManager gameManager;
     private CardManager cardManager;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text effects;
 
     static int DiceValue;   //Diceから受け取った値
 
@@ -45,4 +48,9 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     //{
       //  Debug.Log("カードへのタップを終了しました");
     //}
+
+    public void SetCard(int cardId)
+    {
+        nameText.text = cardData.CardDataList[cardId].CardName;
+    }
 }

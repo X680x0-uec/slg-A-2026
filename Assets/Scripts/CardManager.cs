@@ -65,7 +65,9 @@ public class CardManager : MonoBehaviour
             } while (true);
             newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
             newCard[i].transform.SetParent(canvas.transform, false);
-            destroyList.Add(newCard[i]);
+            destroyList.Add(newCard[i]);    //一括で消去できるように全てリストに入れておく
+            CardScript cardScript = newCard[i].GetComponent<CardScript>();
+            cardScript.SetCard(random);     //カードの見た目を設定
         }
         Debug.Log("プレファブを生成");
     }
