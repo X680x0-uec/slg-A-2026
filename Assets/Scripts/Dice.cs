@@ -1,14 +1,34 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using JetBrains.Annotations;
 
 public class Dice : MonoBehaviour
 {
     private GameManager gameManager;    // GameManagerオブジェクトを記憶
     [SerializeField] private CardScript cardScript;      // 出目をCardScriptに保存
     [SerializeField] private TextMeshProUGUI diceText;
+    [SerializeField] private GameObject diceUiPar;
+    [SerializeField] private Sprite[] diceSprites; //サイコロの出目の画像を格納
+    private GameObject[] diceUIs; //サイコロのオブジェクト
+    private Image[] diceUIImages; //サイコロのImageコンポーネント
+    [SerializeField] private bool isDiceRolling = false;
+    public bool IsDiceRolling => isDiceRolling;
+    
     void Start()
     {
-        gameManager = Object.FindAnyObjectByType<GameManager>();
+        gameManager = FindAnyObjectByType<GameManager>();
+
+        int count = diceUiPar.transform.childCount; //サイコロの画像を取得
+        diceUIs = new GameObject[count];
+        diceUIImages = new Image[count];
+
+
+        for (int i = 0; i < count; i++)
+        {
+            diceUIs[i] = diceUiPar.transform.GetChild(i).gameObject; //
+            diceUIImages[i] = diceUIs[i].GetComponent<Image>();
+        }
     }
 
     public void RollDice()
@@ -16,10 +36,20 @@ public class Dice : MonoBehaviour
         // GameManagerがダイス待ち状態（isWaitingForDice == true）でない時は一切受け付けない
         if (gameManager != null && !gameManager.IsWaitingForDice)
         {
-            Debug.Log("コマが移動中のため、ダイスは振れません");
+            Debug.Log("コマが移動中またはカードが未選択のため、ダイスは振れません");
             return;
         }
         // GameManager から現在のプレイヤー（インスタンス）を取得する
+
+        if (!isDiceRolling)
+        {
+            Debug.Log("もう一度ボタンを押すとサイコロを振ります");
+            isDiceRolling = true;
+            return;
+        }
+
+        isDiceRolling = false;
+
         Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer == null)
         {
@@ -27,7 +57,7 @@ public class Dice : MonoBehaviour
             return;
         }
 
-        int totalValue = 0; // 合計値
+        int totalValue;
 
         if (currentPlayer.NextDiceType == DiceType.Normal)
         {
@@ -38,7 +68,9 @@ public class Dice : MonoBehaviour
             Debug.Log($"通常ダイス: {dice1} + {dice2} = {totalValue}");
             if (diceText != null) //出目の表示を変更
             {
-                diceText.text = $"DICE: {dice1} + {dice2} = {totalValue}";
+                diceText.text = $"→ {totalValue}";
+                diceUIImages[0].sprite = diceSprites[dice1 - 1];
+                diceUIImages[1].sprite = diceSprites[dice2 - 1];
             } 
             
             gameManager.OnDiceRolled(totalValue);   //出目を表示
