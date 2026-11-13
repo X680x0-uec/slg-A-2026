@@ -13,28 +13,28 @@ MonoBehaviour:
   m_Name: CardData
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   CardDataList:
-  - Name: "\u51FA\u76EE\u6539\u7AC4"
+  - Name: "\u3010\u901A\u5E381\u3011\u51FA\u76EE\u6E1B\u5C11"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: "\u672C\u6765\u306E\u51FA\u76EE\u3092\xB110\u306E\u7BC4\u56F2\u3067\u597D\u304D\u306A\u5024\u306B\u5909\u66F4\u3059\u308B"
-  - Name: 
+    Explain: "\u51FA\u76EE\u5408\u8A08\u5024\u30921\u6E1B\u3089\u3059\u3002"
+  - Name: "\u3010\u901A\u5E382\u3011\u51FA\u76EE\u5897\u52A0"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    Explain: "\u51FA\u76EE\u5408\u8A08\u5024\u30921\u5897\u3084\u3059\u3002"
+  - Name: "\u3010\u901A\u5E383\u3011\u79FB\u52D5\u505C\u6B62"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    Explain: "\u4ECA\u56DE\u3060\u3051\u79FB\u52D5\u3057\u306A\u3044\u3002 \u73FE\u5728\u5730\u306B\u7559\u307E\u3063\u305F\u5834\u5408\u3001\u305D\u306E\u73FE\u5728\u5730\u306E\u30DE\u30B9\u52B9\u679C\u3092\u767A\u52D5\u3059\u308B\u3002 "
+  - Name: "\u3010\u901A\u5E384\u3011\u5468\u8FBA\u78BA\u8A8D"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
-  - Name: 
+    Explain: "\u73FE\u5728\u4F4D\u7F6E\u304B\u3089\u9032\u884C\u65B9\u5411\u306B10\u30DE\u30B9\u5148\u307E\u3067\u306E\u30DE\u30B9\u60C5\u5831\u3092\u4E00\u6642\u7684\u306B\u8868\u793A\u3059\u308B\u3002 "
+  - Name: "\u3010\u901A\u5E385\u3011\u30DE\u30B9\u52B9\u679C\u7121\u52B9"
     isUsed: 0
     PulsTurn: 0
     MinusTurn: 0
-    Explain: 
+    Explain: "\u6B21\u306B\u8E0F\u3080\u30DE\u30B9\u52B9\u679C\u3092\u7121\u52B9\u5316\u3059\u308B\u3002 "

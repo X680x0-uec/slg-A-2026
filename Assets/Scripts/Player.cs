@@ -1,4 +1,5 @@
 using System.Collections; // ★ コルーチンを使うために追加
+using System.Collections.Generic; 
 using UnityEngine;
 
 public enum DiceType // ダイスの種類を定義
@@ -9,7 +10,6 @@ public enum DiceType // ダイスの種類を定義
 
 public class Player : MonoBehaviour
 {
-    //[SerializeField]private int currentSquareIndex = 0;
     private GameManager gameManager;
     private BoardManager boardManager;
     private Dice dice;
@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     [SerializeField]int playerCurrentLocation = 0; //プレイヤーの現在位置
     public int PlayerCurrentLocation => playerCurrentLocation; // ★外部（GameManager）から現在位置を取得できるようにプロパティを追加
     public DiceType NextDiceType { get; set; } = DiceType.Normal; // 次に振るダイスの種類(通常はNormal)
+    private List<GameObject> myCards = new List<GameObject>();  // プレイヤー個別の手札リスト
+    public List<GameObject> MyCards => myCards;
 
     [SerializeField] private float moveSpeed = 8f; // ★ なめらかな移動速度（お好みで調整）
 
@@ -87,8 +89,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    //  マス効果一覧
+    /// </summary>
     private IEnumerator ApplyGridEffectRoutine()
     {
+        // 通常カード5番「マス効果無効」が使われていたら、マス効果を発動せずにターン終了
+        if (isGridEffectNullified)
+        {
+            Debug.Log("【マス効果無効】カードの効果により、このマスの効果は無効化されました！");
+            ResetTurnCardEffects(); // 使い終わったのでリセット
+            if (gameManager != null) gameManager.OnPlayerMoveComplete();
+            yield break; // ここで終了
+        }
+
         GridEffect effect = boardManager.GetGridEffect(playerCurrentLocation); // BoardManagerから現在地のマス内容を取得
         int value = boardManager.GetGridEffectValue(playerCurrentLocation); // マス内容の数値を取得
 
@@ -106,8 +120,13 @@ public class Player : MonoBehaviour
               yield return StartCoroutine(MoveRoutine(-value,triggerEffectOnComplete: false));
               break;
             
-            case GridEffect.GetCard:
-              // 通常・疑惑カード獲得（未実装）
+            case GridEffect.GetCard:   // 通常・疑惑カード獲得
+              Debug.Log("【カード獲得マス】手札が1枚増える！");
+              CardManager cardManager = Object.FindAnyObjectByType<CardManager>();
+              if (cardManager != null)
+              {
+                cardManager.DrawNormalOrSuspicionCard(this); // ★ 「this（自分自身）」を渡す！
+              }
               break;
             
             case GridEffect.ChangeDiceroll: // 出目変化マス 
@@ -124,6 +143,51 @@ public class Player : MonoBehaviour
 
         transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);  // マス効果適用後の最終位置にコマを再配置
         gameManager.OnPlayerMoveComplete(); // すべての移動・効果処理が終わってからターン終了
+    }
+    
+    /// <summary>
+    /// カード効果実行
+    /// </summary>
+
+    // --- 今回のターンだけのカード効果状態 ---
+    public int diceModifier = 0;               // 1番・2番用：出目補正（-1 や +1）
+    public bool isStayAction = false;          // 3番用：移動停止フラグ
+    public bool isGridEffectNullified = false; // 5番用：マス効果無効フラグ
+
+    // 【通常カード3：移動停止】移動せず現在地のマス効果だけ発動する
+    public void StayAndTriggerEffect()
+    {
+        Debug.Log("【移動停止】現在地に留まった場合、その現在地のマス効果を発動する");
+        StartCoroutine(ApplyGridEffectRoutine());
+    }
+
+    // 【通常カード4：周辺確認】現在地の次のマスから10マス先まで調べる
+    public void CheckAheadGrids(int range)
+    {
+        if (boardManager == null) return;
+
+        int totalWaypoints = boardManager.GetTotalWaypoints();
+        string resultText = $"【周辺確認】現在地({playerCurrentLocation}番)から先 {range}マスの情報：\n";
+
+        for (int i = 1; i <= range; i++)
+        {
+            int targetIndex = playerCurrentLocation + i;
+            if (targetIndex >= totalWaypoints) break;
+
+            GridEffect effect = boardManager.GetGridEffect(targetIndex);
+            int value = boardManager.GetGridEffectValue(targetIndex);
+            resultText += $"{targetIndex}番マス：{effect}（数値：{value}）\n";
+        }
+
+        Debug.Log(resultText);
+    }
+
+    // ターン終了時にカード効果をリセットする
+    public void ResetTurnCardEffects()
+    {
+        diceModifier = 0;
+        isStayAction = false;
+        isGridEffectNullified = false;
     }
 
 }
