@@ -13,6 +13,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TMP_Text effects;
 
     static int DiceValue;   //Diceから受け取った値
+    private int cardID;
 
     void Start()
     {
@@ -31,7 +32,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         if (gameManager.IsWaitingForDice) return; // サイコロが振られてないとき終了する
 
         Debug.Log("カードがタップされました");
-        Debug.Log(DiceValue);
+        Debug.Log("カードID：" + cardID);
         gameManager.GetCurrentPlayer().Move(DiceValue);
         //players[gameManager.currentTurn].Move(DiceValue);
         foreach (GameObject card in cardManager.destroyList)
@@ -49,8 +50,9 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
       //  Debug.Log("カードへのタップを終了しました");
     //}
 
-    public void SetCard(int cardId)
+    public void SetCard(int id)
     {
-        nameText.text = cardData.CardDataList[cardId].CardName;
+        cardID = id;    //カードIDを受け取る
+        nameText.text = cardData.CardDataList[id].CardName;
     }
 }
