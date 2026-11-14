@@ -104,7 +104,10 @@ public class CardManager : MonoBehaviour
         int length = cardData.CardDataList.Count;
         int random = Random.Range(0, length);
 
-        GameObject addCard = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
+        int cardIndex = player.MyCards.Count; // 0,1,2...　カード枚数
+        Vector3 spawnPos = new Vector3(-100+(cardIndex*100),-150,0);
+
+        GameObject addCard = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
         addCard.transform.SetParent(canvas.transform, false);
 
         CardScript script = addCard.GetComponent<CardScript>();
