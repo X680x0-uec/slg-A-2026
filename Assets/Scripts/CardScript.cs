@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class CardScript : MonoBehaviour, IPointerClickHandler
+public class CardScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] CardData cardData;
     [SerializeField] private GameManager gameManager;
     private int cardId; // リストの添え字（0~4:通常カード)
 
     public static int DiceValue;   //Diceから受け取った値
+    private Dice dice;
     private CardManager cardManager;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text effects;
@@ -20,12 +21,47 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     {
         gameManager = FindAnyObjectByType<GameManager>();
         cardManager = FindAnyObjectByType<CardManager>();
+        dice = FindAnyObjectByType<Dice>();
+
+        if (effects != null) effects.gameObject.SetActive(false);
     }
     
     //Diceが振られたときに呼び出され、値が更新される
     public void saveDiceValue(int diceValue)
     {
         DiceValue = diceValue;
+    }
+    public void SetCard(int id)
+    {
+        cardId = id;    //カードIDを受け取る
+        if (cardData != null && id < cardData.CardDataList.Count)
+        {
+            if (nameText != null)
+            {
+                nameText.text = cardData.CardDataList[id].CardName; // カード表面に名前表示
+            }
+            if (effects != null)
+            {
+                effects.text = cardData.CardDataList[id].Explain; // 説明文表示
+            }
+        }
+        nameText.text = cardData.CardDataList[id].CardName;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (effects != null)
+        {
+            effects.gameObject.SetActive(true);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (effects != null)
+        {
+            effects.gameObject.SetActive(false);
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -40,11 +76,13 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
             // 0~4: 通常カード効果
             case 0: // 1番：出目減少
                 currentPlayer.diceModifier -= 1;
+                if (dice != null) dice.AppendEffectText(-1);
                 Debug.Log($"出目-1をセット（現在の補正: {currentPlayer.diceModifier}）");
                 break;
 
             case 1: // 2番：出目増加
                 currentPlayer.diceModifier += 1;
+                if (dice != null) dice.AppendEffectText(1);
                 Debug.Log($"出目+1をセット（現在の補正: {currentPlayer.diceModifier}）");
                 break;
 
@@ -65,7 +103,6 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         // ここで手札からカードを消す
         Debug.Log("カードがタップされました");
         Debug.Log("カードID：" + cardId);
-        gameManager.GetCurrentPlayer().Move(DiceValue);
         //players[gameManager.currentTurn].Move(DiceValue);
         foreach (GameObject card in cardManager.destroyList)
         {
@@ -75,6 +112,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
             }
         }
         cardManager.destroyList.Clear();
+        gameManager.ExecutePlayerMove(); // カード効果適用後、プレイヤーの行動（移動 or 移動停止）を実行
     }
 
     //public void OnPointerUp(PointerEventData eventData)
@@ -82,9 +120,4 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
       //  Debug.Log("カードへのタップを終了しました");
     //}
 
-    public void SetCard(int id)
-    {
-        cardId = id;    //カードIDを受け取る
-        nameText.text = cardData.CardDataList[id].CardName;
-    }
 }

@@ -142,6 +142,7 @@ public class Player : MonoBehaviour
         }
 
         transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);  // マス効果適用後の最終位置にコマを再配置
+        ResetTurnCardEffects();
         gameManager.OnPlayerMoveComplete(); // すべての移動・効果処理が終わってからターン終了
     }
     
