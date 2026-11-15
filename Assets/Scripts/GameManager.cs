@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
         UpdateActiveCamera(); // ゲーム開始時のカメラ設定
         UpdateRemainingGridUI();
-        cardManager.GenerateCard();             //カードを配る
+        cardManager.DrawHandForCurrentPlayer();             //カードを配る
     }
 
     public void OnDiceRolled(int diceValue)
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
         isWaitingForDice = true;
         UpdateRemainingGridUI();
-        cardManager.GenerateCard();             //カードを配る
+        cardManager.DrawHandForCurrentPlayer();             //カードを配る
     }
 
     /// <summary>

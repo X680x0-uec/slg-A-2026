@@ -37,59 +37,66 @@ public class CardManager : MonoBehaviour
 
     public List<GameObject> destroyList = new List<GameObject>();  //全消去するために生成した瞬間にこのリストに入れる
 
-    public void GenerateCard()
+
+    // 現在のプレイヤーの山札（通常0〜4 ＋ 未使用のイカサマ5〜10）からランダムに3枚引いて手札にする
+    public void DrawHandForCurrentPlayer()
     {
-        int length = cardData.CardDataList.Count;   //カードの種類の数
-        int[] already = new int[length];            //すでに出た番号（ダブらないように）
-        int random;                                 //乱数を格納
-
-        GameObject[] newCard = new GameObject[3];
-        Vector3[] card_pos = {
-            new Vector3(-100,-150,0),
-            new Vector3(0,-150,0),
-            new Vector3(100,-150,0),
-        };
-        for (int p = 0; p < gameManager.players.Length; p++)
+        // 前のターンの手札表示をクリア
+        foreach (GameObject card in destroyList)
         {
-            Player targetPlayer = gameManager.players[p];
-            
-            for (int i = 0; i < 3; i++)
-            {
-                do
-                {
-                    random = Random.Range(0, length);   //ランダムなカード番号を生成
-                    bool flg = false;                   //trueになったらやり直し
-                    for (int j = 0; j < already.Length; j++)
-                    {
-                        if (random == already[j])       //もし被ったらやり直し
-                        {
-                            flg = true;
-                            break;
-                        }
-                    }
-                    if (!flg)   //被んなかったとき
-                    {
-                        already[i] = random;
-                        break;  //ループ抜け出す
-                    }
-                } while (true);
-                newCard[i] = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
-                newCard[i].transform.SetParent(canvas.transform, false);
-                CardScript script = newCard[i].GetComponent<CardScript>();
-                if (script != null)
-                {
-                    script.SetCard(random); // このカードは何番のカードか覚えさせる
-                }
+            if (card != null) Destroy(card);
+        }
+        destroyList.Clear();
 
-                destroyList.Add(newCard[i]);    //一括で消去できるように全てリストに入れておく
-                script.SetCard(random);     //カードの見た目を設定
-                
-                // 作ったカードをそのプレイヤーのリストに覚えさせる
-                targetPlayer.MyCards.Add(newCard[i]);
+        Player currentPlayer = gameManager.GetCurrentPlayer();
+        if (currentPlayer == null) return;
+        currentPlayer.MyCards.Clear();
+
+        // 1. 今引けるカードIDの候補リスト（山札）を作る
+        List<int> availableCardIds = new List<int>();
+
+        // 通常カード（ID: 0〜4）は毎回山札に入っている
+        for (int i = 0; i <= 4; i++)
+        {
+            if (i < cardData.CardDataList.Count) availableCardIds.Add(i);
+        }
+
+        // イカサマカード（ID: 5〜10）は「未使用（usedCheatingCards[i - 5] == false）」のものだけ山札に入れる
+        for (int i = 5; i <= 10; i++)
+        {
+            int cheatIndex = i - 5; // 0〜5
+            if (i < cardData.CardDataList.Count && !currentPlayer.usedCheatingCards[cheatIndex])
+            {
+                availableCardIds.Add(i);
             }
         }
-        //UpdateCardVisibility();
-        Debug.Log("プレファブを生成");
+
+        // 2. 山札から重複なしで最大3枚引く
+        int drawCount = Mathf.Min(3, availableCardIds.Count);
+        Vector3[] card_pos = {
+            new Vector3(-110, -150, 0),
+            new Vector3(0, -150, 0),
+            new Vector3(110, -150, 0),
+        };
+
+        for (int i = 0; i < drawCount; i++)
+        {
+            int randIdx = Random.Range(0, availableCardIds.Count);
+            int pickedCardId = availableCardIds[randIdx];
+            availableCardIds.RemoveAt(randIdx); // 重複防止
+
+            GameObject cardObj = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
+            cardObj.transform.SetParent(canvas.transform, false);
+
+            CardScript script = cardObj.GetComponent<CardScript>();
+            if (script != null)
+            {
+                script.SetCard(pickedCardId);
+            }
+
+            destroyList.Add(cardObj);
+            currentPlayer.MyCards.Add(cardObj);
+        }
     }
 
 
@@ -105,7 +112,7 @@ public class CardManager : MonoBehaviour
         int random = Random.Range(0, length);
 
         int cardIndex = player.MyCards.Count; // 0,1,2...　カード枚数
-        Vector3 spawnPos = new Vector3(-100+(cardIndex*100),-150,0);
+        Vector3 spawnPos = new Vector3(-110 + (cardIndex*110),-150,0);
 
         GameObject addCard = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
         addCard.transform.SetParent(canvas.transform, false);
