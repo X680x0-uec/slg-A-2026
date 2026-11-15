@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class CardScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CardScript : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] CardData cardData;
     [SerializeField] private GameManager gameManager;
@@ -23,7 +23,28 @@ public class CardScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         cardManager = FindAnyObjectByType<CardManager>();
         dice = FindAnyObjectByType<Dice>();
 
-        if (effects != null) effects.gameObject.SetActive(false);
+        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+        if (nameText == null && texts.Length > 0)
+        {
+            nameText = texts[0];
+        }
+        if (effects == null)
+        {
+            foreach (var t in texts)
+            {
+                if (t != nameText)
+                {
+                    effects = t;
+                    break;
+                }
+            }
+        }
+
+        // 最初から説明文も表示状態にする
+        if (effects != null)
+        {
+            effects.gameObject.SetActive(true);
+        }
     }
     
     //Diceが振られたときに呼び出され、値が更新される
@@ -44,23 +65,6 @@ public class CardScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             {
                 effects.text = cardData.CardDataList[id].Explain; // 説明文表示
             }
-        }
-        nameText.text = cardData.CardDataList[id].CardName;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (effects != null)
-        {
-            effects.gameObject.SetActive(true);
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (effects != null)
-        {
-            effects.gameObject.SetActive(false);
         }
     }
 
@@ -99,6 +103,25 @@ public class CardScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 currentPlayer.isGridEffectNullified = true;
                 Debug.Log("マス効果無効をセット");
                 break;
+            // 5~ イカサマカード効果
+            case 5: // イカサマ1番：出目改竄
+                break;
+            
+            case 6: // イカサマ2番：強行突破
+                break;
+
+            case 7: // イカサマ3番：現実拒否
+                break;
+            
+            case 8: // イカサマ4番：全体妨害
+                break;
+
+            case 9: // イカサマ5番：神経妨害
+                break;
+            
+            case 10: // イカサマ6番：出目偽装
+                break;
+
         }
         // ここで手札からカードを消す
         Debug.Log("カードがタップされました");

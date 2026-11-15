@@ -89,9 +89,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    /// <summary>
-    //  マス効果一覧
-    /// </summary>
+    // =========================================================
+    // マス効果一覧
+    // =========================================================
     private IEnumerator ApplyGridEffectRoutine()
     {
         // 通常カード5番「マス効果無効」が使われていたら、マス効果を発動せずにターン終了
@@ -146,9 +146,10 @@ public class Player : MonoBehaviour
         gameManager.OnPlayerMoveComplete(); // すべての移動・効果処理が終わってからターン終了
     }
     
-    /// <summary>
-    /// カード効果実行
-    /// </summary>
+    
+    // =========================================================
+    // カード効果実行
+    // =========================================================
 
     // --- 今回のターンだけのカード効果状態 ---
     public int diceModifier = 0;               // 1番・2番用：出目補正（-1 や +1）
@@ -191,4 +192,90 @@ public class Player : MonoBehaviour
         isGridEffectNullified = false;
     }
 
+    // =========================================================
+    // イカサマカード＆代償管理ステータス
+    // =========================================================
+
+    [Header("イカサマ使用済み管理（0〜5：イカサマ1〜6番）")]
+    public bool[] usedCheatingCards = new bool[6]; // trueなら使用済み（復活マスで1枚ずつ復活）
+
+    [Header("ゴール位置（全体妨害用：上限90）")]
+    public int goalIndex = 49; // 初期値は BoardManager の総マス数 - 1
+
+    [Header("代償：（残りラウンド数 / 永続フラグ）")]
+    public int hideOwnDiceRounds = 0;            // 1番代償：自分の出目が文字化け（
+    public bool hideRemainGridPermanent = false; // 2番代償：自分の残りマス数が文字化け
+    public int restrictDice1To2Rounds = 0;       // 2番代償：ダイスが1〜2に制限される
+    public bool hideGridDetailPermanent = false; // 3番代償：マス効果の詳細（数値など）が文字化け
+    public bool hideRankPermanent = false;       // 4番代償：順位・他人の残りマスが文字化け
+    public bool hideGridInfoPermanent = false;   // 5番代償：現在マス番号・停止予定マスが文字化け
+    public bool skipDiceNextRound = false;       // 5番代償：次のラウンドはダイスを振れず出目0
+    public bool hideOtherLastMovePermanent = false; // 6番代償：他人の前ラウンド移動数が文字化け
+
+    [Header("イカサマ効果：継続バフ＆神経妨害状態")]
+    public int disguiseMoveRounds = 0;           // 6番効果：他プレイヤーに2〜12の偽装移動数を見せる残りラウンド
+    public int revealAllInfoRounds = 0;          // 5番効果（使用者バフ）：自分の代償による情報喪失を貫通して閲覧可能
+    public int afflictedByNerveRounds = 0;       // 5番効果（被害者デバフ）：神経妨害の全代償を受けている残りラウンド
+
+    // --- 移動履歴（6番：出目偽装の記録用） ---
+    public int lastTrueMoveSteps = 0;            // 前ラウンドの真の移動マス数（自分用）
+    public int lastDisguisedMoveSteps = 0;       // 他プレイヤーに見せる表示用移動マス数（2〜12）
+
+    /// <summary>
+    /// 神経妨害の「全代償状態」か、その個別代償を受けているかを判定（使用者の閲覧バフも考慮）
+    /// </summary>
+    public bool IsInfoHidden(bool specificHideCondition)
+    {
+        if (revealAllInfoRounds > 0) return false;　// 神経妨害の使用者バフ中なら、すべての情報喪失を貫通して見られる
+
+        if (afflictedByNerveRounds > 0) return true;　// 神経妨害を他プレイヤーから受けている間は全情報が隠れる
+
+        return specificHideCondition;
+    }
+
+    /// <summary>
+    /// 情報が隠されている場合に文字化け文字列を返すヘルパー
+    /// </summary>
+    public string MaskTextIfHidden(string originalText, bool isHidden)
+    {
+        if (!isHidden) return originalText;
+        return "■?#@!";
+    }
+
+    /// <summary>
+    /// ラウンド経過時のカウントダウン（自分のターン終了時などに呼ぶ）
+    /// </summary>
+    public void TickPenaltyRounds()
+    {
+        if (hideOwnDiceRounds > 0) hideOwnDiceRounds--;
+        if (restrictDice1To2Rounds > 0) restrictDice1To2Rounds--;
+        if (disguiseMoveRounds > 0) disguiseMoveRounds--;
+        if (revealAllInfoRounds > 0) revealAllInfoRounds--;
+        if (afflictedByNerveRounds > 0) afflictedByNerveRounds--;
+    }
+
+    /// <summary>
+    /// 【復活マス用】使用済みイカサマカードの中からランダムで1枚だけ復活させる
+    /// </summary>
+    public void RestoreOneRandomCheatingCard()
+    {
+        List<int> usedIndices = new List<int>();
+        for (int i = 0; i < usedCheatingCards.Length; i++)
+        {
+            if (usedCheatingCards[i])
+            {
+                usedIndices.Add(i);
+            }
+        }
+
+        if (usedIndices.Count == 0)
+        {
+            Debug.Log($"【イカサマ復活】{gameObject.name} に使用済みのイカサマカードはありませんでした。");
+            return;
+        }
+
+        int pickedIndex = usedIndices[Random.Range(0, usedIndices.Count)];
+        usedCheatingCards[pickedIndex] = false;
+        Debug.Log($"【イカサマ復活】{gameObject.name} のイカサマカード（ID:{pickedIndex + 1}）が1枚復活しました！");
+    }
 }

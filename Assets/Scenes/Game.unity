@@ -166,6 +166,7 @@ MonoBehaviour:
   cardData: {fileID: 11400000, guid: fdb49f8d30405614db76ee02d1851450, type: 2}
   cardPrefab: {fileID: 7160068561206098099, guid: 5fa68cca4189f4c44a41e0af80cd9bca, type: 3}
   canvas: {fileID: 745252547}
+  gameManager: {fileID: 0}
   destroyList: []
 --- !u!1 &164879242
 GameObject:
@@ -570,6 +571,7 @@ MonoBehaviour:
   advanceCount: 6
   backCount: 5
   changeDiceRollCount: 3
+  getCardCount: 3
   minEffectValue: 3
   maxEffectValue: 3
   specialGrids:
@@ -1335,6 +1337,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
   moveSpeed: 8
+  diceModifier: 0
+  isStayAction: 0
+  isGridEffectNullified: 0
+  usedCheatingCards: 000000000000
+  goalIndex: 49
+  hideOwnDiceRounds: 0
+  hideRemainGridPermanent: 0
+  restrictDice1To2Rounds: 0
+  hideGridDetailPermanent: 0
+  hideRankPermanent: 0
+  hideGridInfoPermanent: 0
+  skipDiceNextRound: 0
+  hideOtherLastMovePermanent: 0
+  disguiseMoveRounds: 0
+  revealAllInfoRounds: 0
+  afflictedByNerveRounds: 0
+  lastTrueMoveSteps: 0
+  lastDisguisedMoveSteps: 0
 --- !u!65 &1015246289
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1801,6 +1821,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
   moveSpeed: 8
+  diceModifier: 0
+  isStayAction: 0
+  isGridEffectNullified: 0
+  usedCheatingCards: 000000000000
+  goalIndex: 49
+  hideOwnDiceRounds: 0
+  hideRemainGridPermanent: 0
+  restrictDice1To2Rounds: 0
+  hideGridDetailPermanent: 0
+  hideRankPermanent: 0
+  hideGridInfoPermanent: 0
+  skipDiceNextRound: 0
+  hideOtherLastMovePermanent: 0
+  disguiseMoveRounds: 0
+  revealAllInfoRounds: 0
+  afflictedByNerveRounds: 0
+  lastTrueMoveSteps: 0
+  lastDisguisedMoveSteps: 0
 --- !u!65 &1231956525
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1928,6 +1966,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
   moveSpeed: 8
+  diceModifier: 0
+  isStayAction: 0
+  isGridEffectNullified: 0
+  usedCheatingCards: 000000000000
+  goalIndex: 49
+  hideOwnDiceRounds: 0
+  hideRemainGridPermanent: 0
+  restrictDice1To2Rounds: 0
+  hideGridDetailPermanent: 0
+  hideRankPermanent: 0
+  hideGridInfoPermanent: 0
+  skipDiceNextRound: 0
+  hideOtherLastMovePermanent: 0
+  disguiseMoveRounds: 0
+  revealAllInfoRounds: 0
+  afflictedByNerveRounds: 0
+  lastTrueMoveSteps: 0
+  lastDisguisedMoveSteps: 0
 --- !u!65 &1238693682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2282,6 +2338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardScript
   cardData: {fileID: 11400000, guid: fdb49f8d30405614db76ee02d1851450, type: 2}
+  gameManager: {fileID: 589539313}
   nameText: {fileID: 0}
   effects: {fileID: 0}
 --- !u!1 &1959135306
