@@ -23,24 +23,6 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         cardManager = FindAnyObjectByType<CardManager>();
         dice = FindAnyObjectByType<Dice>();
 
-        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
-        if (nameText == null && texts.Length > 0)
-        {
-            nameText = texts[0];
-        }
-        if (effects == null)
-        {
-            foreach (var t in texts)
-            {
-                if (t != nameText)
-                {
-                    effects = t;
-                    break;
-                }
-            }
-        }
-
-        // 最初から説明文も表示状態にする
         if (effects != null)
         {
             effects.gameObject.SetActive(true);
@@ -74,7 +56,14 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
 
         Player currentPlayer = gameManager.GetCurrentPlayer();
         Debug.Log($"カード(ID:{cardId})を使用しました！");
+        
+        List<Player> allPlayers = new List<Player>(gameManager.players); 
 
+        // イカサマカード（ID 5〜10）なら使用済みフラグを立てる
+        if (cardId >= 5 && cardId <= 10)
+        {
+            currentPlayer.usedCheatingCards[cardId - 5] = true;
+        }
         switch (cardId) // ここにカード効果の設定を書く
         {
             // 0~4: 通常カード効果
@@ -108,18 +97,47 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 break;
             
             case 6: // イカサマ2番：強行突破
+                currentPlayer.diceModifier += 15;
+                currentPlayer.hideRemainGridPermanent = true;
+                currentPlayer.restrictDice1To2Rounds = 2;
+                if (dice != null) dice.AppendEffectText(+15);
+                Debug.Log("【イカサマ2】強行突破：+15マス移動（代償：ゴール残りマス不可視＆2Rダイス1〜2制限）");
                 break;
 
             case 7: // イカサマ3番：現実拒否
                 break;
             
             case 8: // イカサマ4番：全体妨害
+                foreach (Player p in allPlayers)
+                {
+                    if (p != currentPlayer)
+                    {
+                        p.goalIndex = Mathf.Min(90, p.goalIndex + 10);
+                    }
+                }
+                currentPlayer.hideRankPermanent = true;
+                Debug.Log("【イカサマ4】全体妨害：他全員のゴール+10（代償：順位不可視）");
                 break;
 
             case 9: // イカサマ5番：神経妨害
+                foreach (Player p in allPlayers)
+                {
+                    if (p != currentPlayer)
+                    {
+                        p.afflictedByNerveRounds = Mathf.Max(p.afflictedByNerveRounds, 2);
+                    }
+                }
+                currentPlayer.revealAllInfoRounds = Mathf.Max(currentPlayer.revealAllInfoRounds, 2);
+                currentPlayer.hideGridInfoPermanent = true;
+                currentPlayer.skipDiceNextRound = true;
+                Debug.Log("【イカサマ5】神経妨害：他全員に全代償2R＆自分は全情報閲覧2R（代償：マス番号不可視＆次Rダイス不可）");
                 break;
+
             
             case 10: // イカサマ6番：出目偽装
+                currentPlayer.disguiseMoveRounds = 2;
+                currentPlayer.hideOtherLastMovePermanent = true;
+                Debug.Log("【イカサマ6】出目偽装：2R間移動数偽装(2〜12)（代償：他人の前R移動数不可視）");
                 break;
 
         }

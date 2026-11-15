@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
     public int goalIndex = 49; // 初期値は BoardManager の総マス数 - 1
 
     [Header("代償：（残りラウンド数 / 永続フラグ）")]
-    public int hideOwnDiceRounds = 0;            // 1番代償：自分の出目が文字化け（
+    public int hideOwnDiceRounds = 0;            // 1番代償：自分の出目が文字化け
     public bool hideRemainGridPermanent = false; // 2番代償：自分の残りマス数が文字化け
     public int restrictDice1To2Rounds = 0;       // 2番代償：ダイスが1〜2に制限される
     public bool hideGridDetailPermanent = false; // 3番代償：マス効果の詳細（数値など）が文字化け
