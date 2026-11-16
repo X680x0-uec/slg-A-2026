@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     [Header("プレイヤー専用カメラ（パターンB）")]
     [SerializeField] private Camera[] playerCameras; // ★ Camera_P1, Camera_P2, Camera_P3 を登録
 
-    [SerializeField] private int currentTurn = 0; // 誰のターンか
-    [SerializeField] private TurnPhase currentPhase = TurnPhase.WaitingForDice;
+    [SerializeField] public int currentTurn = 0; // 誰のターンか
+    [SerializeField] public TurnPhase currentPhase = TurnPhase.WaitingForDice;
     public bool IsWaitingForDice => currentPhase == TurnPhase.WaitingForDice; // Dice.cs 用
     public bool CanUseCard => currentPhase == TurnPhase.WaitingForCard;  //CardScript.cs用
 
@@ -31,10 +31,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
     [SerializeField] private TextMeshProUGUI remainingGridText; // 残りマス数表示用テキスト
     [SerializeField] private TextMeshProUGUI otherRemainingGridText;
+    [SerializeField] private PointOut pointOut;     //PointOut.csにアクセス
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
-[Header("指摘選択UI")]
+    [Header("指摘選択UI")]
     [SerializeField] private GameObject accusationPanel;          // 選択肢全体を囲むパネル
     [SerializeField] private Button accuseOther1Button;           // 他プレイヤー1を指摘するボタン
     [SerializeField] private TextMeshProUGUI accuseOther1Text;    // ボタン1のテキスト
@@ -42,8 +43,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI accuseOther2Text;    // ボタン2のテキスト
     [SerializeField] private Button skipAccuseButton;             // 「指摘しない」ボタン
 
-private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目判定用
-
+    private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目判定用
 
     void Start()
     {
@@ -84,7 +84,9 @@ private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目�
         }
         else
         {
-            StartAccusationPhase();
+            //pointOut.ShowPanel();   //指摘フェーズデバッグのためここに置いてる
+            //StartAccusationPhase();
+            currentPhase = TurnPhase.WaitingForDice;
         }
     }
 
@@ -168,7 +170,7 @@ private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目�
         EnterDicePhase();
     }
 
-private void EnterDicePhase()
+    private void EnterDicePhase()
     {
         if (accusationPanel != null)
         {
@@ -186,7 +188,7 @@ private void EnterDicePhase()
         Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
     }
 
-public void ExecutePlayerMove()
+    public void ExecutePlayerMove()
     {
         if (currentPhase != TurnPhase.WaitingForCard) return;
 
@@ -201,13 +203,20 @@ public void ExecutePlayerMove()
         currentPlayer.Move(finalSteps);
     }
 
-public void OnPlayerMoveComplete()
+    public void OnPlayerMoveComplete()
     {
         UpdateRemainingGridUI();
         
         // プレイヤー数3人に合わせて 0 → 1 → 2 → 0 と自動ループ
         currentTurn = (currentTurn + 1) % players.Length;
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
+
+        //指摘フェーズ
+        /*if (currentTurn == 0)
+        {
+            Debug.Log("指摘フェーズ");
+            pointOut.ShowPanel();
+        }*/
 
         StartTurn();
     }
@@ -231,11 +240,6 @@ public void OnPlayerMoveComplete()
             }
         }
     }
-
-
-
-
-
 
     public void UpdateRemainingGridUI()
     {
