@@ -156,6 +156,25 @@ public class Player : MonoBehaviour
     public bool isStayAction = false;          // 3番用：移動停止フラグ
     public bool isGridEffectNullified = false; // 5番用：マス効果無効フラグ
 
+    // 直前のターンで使用したカードID（未使用時は -1）
+    public int lastUsedCardId = -1;
+
+    public void RecordUsedCard(int cardId)
+    {
+        lastUsedCardId = cardId;
+    }
+
+    public void ResetLastUsedCard()
+    {
+        lastUsedCardId = -1;
+    }
+
+public bool HasUsedTargetCard()
+    {
+        return lastUsedCardId >= 5 && lastUsedCardId <= 10; 
+         //この範囲内のカードIDがイカサマカードとして判定される。
+    }
+
     // 【通常カード3：移動停止】移動せず現在地のマス効果だけ発動する
     public void StayAndTriggerEffect()
     {

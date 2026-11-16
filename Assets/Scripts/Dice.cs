@@ -75,6 +75,13 @@ public class Dice : MonoBehaviour
             
             gameManager.OnDiceRolled(totalValue);   //出目を表示
             cardScript.saveDiceValue(totalValue);  //出目をCardScriptに保存
+
+
+            //指摘失敗の−４をテキストに反映
+            if (currentPlayer.diceModifier != 0)
+            {
+                AppendEffectText(currentPlayer.diceModifier);
+            }
         }
         else if (currentPlayer.NextDiceType == DiceType.Special)
         {
