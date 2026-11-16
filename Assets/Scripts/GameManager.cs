@@ -1,7 +1,17 @@
 using UnityEngine;
+using UnityEngine.UI; // ボタン制御のために追加
 using TMPro;
-using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+
+// ターンの進行状態
+public enum TurnPhase
+{
+    AccusationPhase, // 指摘するかどうか選ぶフェーズ（サイコロ前）
+    WaitingForDice,  // サイコロ待ち
+    WaitingForCard,  // カード選択待ち
+    Moving           // コマ移動・マス効果処理中
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -12,8 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera[] playerCameras; // ★ Camera_P1, Camera_P2, Camera_P3 を登録
 
     [SerializeField] private int currentTurn = 0; // 誰のターンか
-    [SerializeField] private bool isWaitingForDice = true;
-    public bool IsWaitingForDice => isWaitingForDice; // ダイス側から「今振れる状態か？」を確認できるようにプロパティを追加
+    [SerializeField] private TurnPhase currentPhase = TurnPhase.WaitingForDice;
+    public bool IsWaitingForDice => currentPhase == TurnPhase.WaitingForDice; // Dice.cs 用
+    public bool CanUseCard => currentPhase == TurnPhase.WaitingForCard;  //CardScript.cs用
 
     
     [Header("参照")]
@@ -23,52 +34,186 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
+[Header("指摘選択UI")]
+    [SerializeField] private GameObject accusationPanel;          // 選択肢全体を囲むパネル
+    [SerializeField] private Button accuseOther1Button;           // 他プレイヤー1を指摘するボタン
+    [SerializeField] private TextMeshProUGUI accuseOther1Text;    // ボタン1のテキスト
+    [SerializeField] private Button accuseOther2Button;           // 他プレイヤー2を指摘するボタン
+    [SerializeField] private TextMeshProUGUI accuseOther2Text;    // ボタン2のテキスト
+    [SerializeField] private Button skipAccuseButton;             // 「指摘しない」ボタン
+
+private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目判定用
+
+
     void Start()
     {
+        if (skipAccuseButton != null)
+        {
+            skipAccuseButton.onClick.RemoveAllListeners();
+            skipAccuseButton.onClick.AddListener(OnSkipAccusation);
+        }
+
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
-        UpdateActiveCamera(); // ゲーム開始時のカメラ設定
-        UpdateRemainingGridUI();
-        cardManager.DrawHandForCurrentPlayer();             //カードを配る
+        StartTurn();
     }
 
-    public void OnDiceRolled(int diceValue)
+    // ターン開始時の共通処理
+    private void StartTurn()
     {
-        if (!isWaitingForDice) return; // サイコロを振ってはいけない状態のときコードを止める
+        // 新しくターンが来たプレイヤーの「1周前のカード使用記録」をリセット
+        Player currentPlayer = GetCurrentPlayer();
+        if (currentPlayer != null)
+        {
+            currentPlayer.ResetLastUsedCard();
+        }
 
-        isWaitingForDice = false; // 二重に振られないようにロック
-        Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
-
-        //サイコロ振ったらじゃなくてカードを押したら動いてほしい
-        //players[currentTurn].Move(diceValue);
-
-    }
-
-    public void OnPlayerMoveComplete()
-    {
+        UpdateActiveCamera();
         UpdateRemainingGridUI();
-        
-        // プレイヤー数（3人）に合わせて 0 -> 1 -> 2 -> 0 と自動ループ
-        currentTurn = (currentTurn + 1) % players.Length;
-
-        UpdateActiveCamera(); // ターン交代時にカメラ切り替え
 
         if (cardManager != null)
         {
             cardManager.UpdateCardVisibility();
+            cardManager.DrawHandForCurrentPlayer();
         }
 
-        Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
-        isWaitingForDice = true;
-        UpdateRemainingGridUI();
-        cardManager.DrawHandForCurrentPlayer();             //カードを配る
+　　　　　// ゲーム最初の1ターン目は誰もカードを使っていないため、指摘フェーズをスキップ
+        if (isFirstTurnOfGame)
+        {
+            isFirstTurnOfGame = false;
+            EnterDicePhase();
+        }
+        else
+        {
+            StartAccusationPhase();
+        }
     }
 
-    /// <summary>
-    /// 現在ターンのプレイヤー専用カメラだけを有効化（AudioListenerエラー対策含む）
-    /// </summary>
+// 指摘フェーズを開始し、他2人のボタンをセットアップする
+    private void StartAccusationPhase()
+    {
+        currentPhase = TurnPhase.AccusationPhase;
+
+        if (accusationPanel == null)
+        {
+            EnterDicePhase();
+            return;
+        }
+
+        accusationPanel.SetActive(true);
+
+        // 自分以外の2人をリストアップ
+        List<Player> otherPlayers = new List<Player>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (i != currentTurn && players[i] != null)
+            {
+                otherPlayers.Add(players[i]);
+            }
+        }
+
+        // 他プレイヤー1のボタン設定
+        if (otherPlayers.Count >= 1 && accuseOther1Button != null)
+        {
+            Player target1 = otherPlayers[0];
+            if (accuseOther1Text != null) accuseOther1Text.text = $"{target1.name} を指摘";
+            accuseOther1Button.onClick.RemoveAllListeners();
+            accuseOther1Button.onClick.AddListener(() => OnAccusePlayer(target1));
+        }
+
+        // 他プレイヤー2のボタン設定
+        if (otherPlayers.Count >= 2 && accuseOther2Button != null)
+        {
+            Player target2 = otherPlayers[1];
+            if (accuseOther2Text != null) accuseOther2Text.text = $"{target2.name} を指摘";
+            accuseOther2Button.onClick.RemoveAllListeners();
+            accuseOther2Button.onClick.AddListener(() => OnAccusePlayer(target2));
+        }
+    }
+
+// 「指摘しない」を選んだときの処理
+    public void OnSkipAccusation()
+    {
+        if (currentPhase != TurnPhase.AccusationPhase) return;
+
+        Debug.Log($"プレイヤー {currentTurn + 1} は指摘を行いませんでした。");
+        EnterDicePhase();
+    }
+
+    // どちらか片方を指摘したときの判定処理
+    public void OnAccusePlayer(Player targetPlayer)
+    {
+        if (currentPhase != TurnPhase.AccusationPhase) return;
+
+        Player currentPlayer = GetCurrentPlayer();
+        Debug.Log($"プレイヤー {currentTurn + 1} が {targetPlayer.name} を指摘しました！");
+
+        if (targetPlayer.HasUsedTargetCard())
+        {
+            // 【指摘成功】対象者がイカサマカード（ID 5〜10）を使っていた場合
+            Debug.Log($"【指摘成功！】{targetPlayer.name} はイカサマカード（ID:{targetPlayer.lastUsedCardId}）を使用していました！");
+
+            // 二重指摘を防ぐため記録をリセット
+            targetPlayer.ResetLastUsedCard();
+
+            // ここに指摘成功時のボーナス・ペナルティを追加できる
+        }
+        else
+        {
+            // 【指摘失敗】対象者はイカサマカードを使っていなかった場合
+            Debug.Log($"【指摘失敗…】{targetPlayer.name} はイカサマカードを使っていませんでした。ペナルティで出目−４！");
+
+            // 失敗（冤罪）時のペナルティ出目-4
+            currentPlayer.diceModifier -=4;
+        }
+        EnterDicePhase();
+    }
+
+private void EnterDicePhase()
+    {
+        if (accusationPanel != null)
+        {
+            accusationPanel.SetActive(false);
+        }
+        currentPhase = TurnPhase.WaitingForDice;
+        Debug.Log($"プレイヤー {currentTurn + 1} はサイコロを振れます。");
+    }
+
+    public void OnDiceRolled(int diceValue)
+    {
+        if (currentPhase != TurnPhase.WaitingForDice) return;
+
+        currentPhase = TurnPhase.WaitingForCard; // 次はカード選択待ち
+        Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
+    }
+
+public void ExecutePlayerMove()
+    {
+        if (currentPhase != TurnPhase.WaitingForCard) return;
+
+        currentPhase = TurnPhase.Moving; // 移動中ロック
+        Player currentPlayer = GetCurrentPlayer();
+
+        if (currentPlayer.isStayAction)
+        {
+            currentPlayer.StayAndTriggerEffect();
+            return;
+        }int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
+        currentPlayer.Move(finalSteps);
+    }
+
+public void OnPlayerMoveComplete()
+    {
+        UpdateRemainingGridUI();
+        
+        // プレイヤー数3人に合わせて 0 → 1 → 2 → 0 と自動ループ
+        currentTurn = (currentTurn + 1) % players.Length;
+        Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
+
+        StartTurn();
+    }
+    
     private void UpdateActiveCamera()
     {
-        Debug.Log(playerCameras.Length);
         if (playerCameras == null || playerCameras.Length == 0) return;
         
         for (int i = 0; i < playerCameras.Length; i++)
@@ -78,7 +223,6 @@ public class GameManager : MonoBehaviour
                 bool isActive = (i == currentTurn);
                 playerCameras[i].enabled = isActive;
 
-                // AudioListenerの重複警告を防止
                 AudioListener listener = playerCameras[i].GetComponent<AudioListener>();
                 if (listener != null)
                 {
@@ -87,6 +231,11 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+
+
+
+
 
     public void UpdateRemainingGridUI()
     {
@@ -120,20 +269,5 @@ public class GameManager : MonoBehaviour
             return players[currentTurn];
         }
         return null;
-    }
-    public void ExecutePlayerMove()
-    {
-        if (isWaitingForDice) return;
-
-        Player currentPlayer = GetCurrentPlayer();
-
-        if (currentPlayer.isStayAction) // もし通常カード③「移動停止」が使われていた場合、止まっていたマス効果を発動
-        {
-            currentPlayer.StayAndTriggerEffect();
-            return;
-        }
-
-        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
-        currentPlayer.Move(finalSteps);
     }
 }

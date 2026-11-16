@@ -148,5 +148,5 @@
         ">>>>>>>cd83f18d3b7b2cb76eee1d2196b766cd84bc659fdotnet.enableWorkspaceBasedDevelopment": false,
         "dotnet.defaultSolution": "slg-A-2026.slnx>>>>>>>eded1b0b94601664a1534834c7281c794175b3ec>>>>>>>bab49e514817c08a001a08c53f8b7ce6c7148629"
     },
-    "dotnet.defaultSolution": "groupgame-2026.slnx"
+    "dotnet.defaultSolution": "slg-A-2026.slnx"
 }

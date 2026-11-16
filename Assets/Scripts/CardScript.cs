@@ -52,11 +52,13 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (gameManager.IsWaitingForDice) return; // サイコロが振られてないとき終了する
+        if (!gameManager.CanUseCard) return; // 指摘フェーズ中orサイコロが振られてないときカードを使えないようにする
 
         Player currentPlayer = gameManager.GetCurrentPlayer();
         Debug.Log($"カード(ID:{cardId})を使用しました！");
         
+        currentPlayer.RecordUsedCard(cardId);
+
         List<Player> allPlayers = new List<Player>(gameManager.players); 
 
         // イカサマカード（ID 5〜10）なら使用済みフラグを立てる
