@@ -51,8 +51,8 @@ public class Player : MonoBehaviour
         // 出目の数だけ1マスずつ進む
         for (int i = 0; i < Mathf.Abs(spaces); i++)
         {
-          // ゴール到達またはスタート（0番目）未満にならない安全対策
-            if (stepDir > 0 && playerCurrentLocation >= totalWaypoints - 1) break;
+            // totalWaypoints - 1 ではなく自分の goalIndex でゴール停止判定
+            if (stepDir > 0 && playerCurrentLocation >= goalIndex) break;
             if (stepDir < 0 && playerCurrentLocation <= 0) break;
 
             if (spaces > 0) playerCurrentLocation++;
@@ -72,9 +72,9 @@ public class Player : MonoBehaviour
         }
 
         // 既存のゴール判定・ログ出力
-        if (playerCurrentLocation >= totalWaypoints - 1)
+        if (playerCurrentLocation >= goalIndex)
         {
-            playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマスに固定
+            playerCurrentLocation = goalIndex; // 位置をゴールのマスに固定
             Debug.Log("ゴール！");
             gameManager.OnPlayerMoveComplete();
             yield break;
@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
     public int goalIndex = 49; // 初期値は BoardManager の総マス数 - 1
 
     [Header("代償：（残りラウンド数 / 永続フラグ）")]
-    public int hideOwnDiceRounds = 0;            // 1番代償：自分の出目が文字化け
+    public bool hideOwnDicePermanent = false;    // 1番代償：自分の出目が文字化け
     public bool hideRemainGridPermanent = false; // 2番代償：自分の残りマス数が文字化け
     public int restrictDice1To2Rounds = 0;       // 2番代償：ダイスが1〜2に制限される
     public bool hideGridDetailPermanent = false; // 3番代償：マス効果の詳細（数値など）が文字化け
@@ -247,7 +247,6 @@ public class Player : MonoBehaviour
     /// </summary>
     public void TickPenaltyRounds()
     {
-        if (hideOwnDiceRounds > 0) hideOwnDiceRounds--;
         if (restrictDice1To2Rounds > 0) restrictDice1To2Rounds--;
         if (disguiseMoveRounds > 0) disguiseMoveRounds--;
         if (revealAllInfoRounds > 0) revealAllInfoRounds--;

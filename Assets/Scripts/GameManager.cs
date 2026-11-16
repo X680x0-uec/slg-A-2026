@@ -42,7 +42,6 @@ public class GameManager : MonoBehaviour
         //players[currentTurn].Move(diceValue);
 
     }
-
     public void OnPlayerMoveComplete()
     {
         UpdateRemainingGridUI();

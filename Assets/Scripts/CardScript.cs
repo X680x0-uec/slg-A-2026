@@ -92,14 +92,14 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 currentPlayer.isGridEffectNullified = true;
                 Debug.Log("マス効果無効をセット");
                 break;
-            // 5~ イカサマカード効果
+            // 5~10 イカサマカード効果
             case 5: // イカサマ1番：出目改竄
                 break;
             
             case 6: // イカサマ2番：強行突破
                 currentPlayer.diceModifier += 15;
                 currentPlayer.hideRemainGridPermanent = true;
-                currentPlayer.restrictDice1To2Rounds = 2;
+                currentPlayer.restrictDice1To2Rounds = 3;
                 if (dice != null) dice.AppendEffectText(+15);
                 Debug.Log("【イカサマ2】強行突破：+15マス移動（代償：ゴール残りマス不可視＆2Rダイス1〜2制限）");
                 break;
@@ -135,7 +135,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
 
             
             case 10: // イカサマ6番：出目偽装
-                currentPlayer.disguiseMoveRounds = 2;
+                currentPlayer.disguiseMoveRounds = 3;
                 currentPlayer.hideOtherLastMovePermanent = true;
                 Debug.Log("【イカサマ6】出目偽装：2R間移動数偽装(2〜12)（代償：他人の前R移動数不可視）");
                 break;
