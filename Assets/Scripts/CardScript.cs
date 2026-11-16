@@ -94,7 +94,16 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 break;
             // 5~10 イカサマカード効果
             case 5: // イカサマ1番：出目改竄
-                break;
+                // 今の手札を画面から消す
+                foreach (GameObject card in cardManager.destroyList)
+                {
+                    if (card != null) Destroy(card);
+                }
+                cardManager.destroyList.Clear();
+
+                // 出目改竄パネルを開く
+                gameManager.OpenDiceFalsifyUI();
+                return; // ここで必ず return する！（下の ExecutePlayerMove() を走らせない）
             
             case 6: // イカサマ2番：強行突破
                 currentPlayer.diceModifier += 15;
@@ -105,7 +114,15 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 break;
 
             case 7: // イカサマ3番：現実拒否
-                break;
+                foreach (GameObject card in cardManager.destroyList)
+                {
+                    if (card != null) Destroy(card);
+                }
+                cardManager.destroyList.Clear();
+
+                // ★ 2. 現実拒否パネルを開く
+                gameManager.OpenRealityDenialUI();
+                return;
             
             case 8: // イカサマ4番：全体妨害
                 int maxGoal = 49;

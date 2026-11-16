@@ -180,17 +180,17 @@ public class BoardManager : MonoBehaviour
     }
 
     public int GetTotalWaypoints() //Player.csに対してマス数の合計を返す
-{
-    // 配列が作られているか確認（Nullチェック）
-    if (generatedWaypoints != null)
     {
-        return generatedWaypoints.Length; // マスの個数を返す
+        // 配列が作られているか確認（Nullチェック）
+        if (generatedWaypoints != null)
+        {
+            return generatedWaypoints.Length; // マスの個数を返す
+        }
+        else
+        {
+            return 0; // まだ作られていなければ 0 を返す
+        }
     }
-    else
-    {
-        return 0; // まだ作られていなければ 0 を返す
-    }
-}
 
     public GridEffect GetGridEffect(int index) //Player.csに対してindexマス目の種類(効果)を返す。
     {
@@ -222,6 +222,14 @@ public class BoardManager : MonoBehaviour
                 generatedGridObjects[i].SetActive(true);
             }
         }
+    }
+
+    // 【イカサマ3：現実拒否用】指定マスの効果を強制的に書き換える
+    public void OverrideGridEffect(int index, GridEffect newEffect, int newValue)
+    {
+        if (generatedGridEffects == null || index < 0 || index >= generatedGridEffects.Length) return;
+        generatedGridEffects[index] = newEffect;
+        generatedGridValues[index] = newValue;
     }
 
 }
