@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardManager
   gridPrefab: {fileID: 4029603860997610514, guid: 9416ad977cfb3704d81d9ceeda239a5b, type: 3}
-  totalGridCount: 50
+  totalGridCount: 91
   gridSpacing: 2
   startPosition: {x: 0, y: 0, z: 0}
   useRandomMode: 1
@@ -1342,7 +1342,7 @@ MonoBehaviour:
   isGridEffectNullified: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0
@@ -1826,7 +1826,7 @@ MonoBehaviour:
   isGridEffectNullified: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0
@@ -1971,7 +1971,7 @@ MonoBehaviour:
   isGridEffectNullified: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0

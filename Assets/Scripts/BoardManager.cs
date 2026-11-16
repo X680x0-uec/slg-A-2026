@@ -28,7 +28,7 @@ public class BoardManager : MonoBehaviour
     public GameObject gridPrefab; //AssetsのGridSquareを雛型とする
 
     [Header("盤面生成")]
-    [SerializeField] private int totalGridCount = 50; // 生成したいマスの合計数
+    [SerializeField] private int totalGridCount = 91; // 生成したいマスの合計数
     [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
     [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
 
@@ -47,6 +47,7 @@ public class BoardManager : MonoBehaviour
     private Transform[] generatedWaypoints; //Transform型(座標や向きなどを指定する型)を格納する配列を宣言
     private GridEffect[] generatedGridEffects; // 生成されたマスの効果を保持
     private int[] generatedGridValues; // 各マスの効果数値を保持
+    private GameObject[] generatedGridObjects; // 生成したマスのGameObjectを保持
 
     void Awake()
     {
@@ -60,6 +61,7 @@ public class BoardManager : MonoBehaviour
         generatedWaypoints = new Transform[totalGridCount]; //Transform型をマスの数だけ格納可能な配列を作る
         generatedGridEffects = new GridEffect[totalGridCount];
         generatedGridValues = new int[totalGridCount];
+        generatedGridObjects = new GameObject[totalGridCount];
 
         for (int i = 0; i < totalGridCount; i++)    //  全マスをデフォルトの Normal で初期化
         {
@@ -93,6 +95,11 @@ public class BoardManager : MonoBehaviour
             GameObject newGrid = Instantiate(gridPrefab, pos, Quaternion.identity); //gridPrefabオブジェクトのクローンをposの位置にそのままの向きで作る
             newGrid.name = $"Grid_{i} ({currentEffect})";
             newGrid.transform.SetParent(this.transform); //生成したマスをBoardManagerの子オブジェクトにする
+            generatedGridObjects[i] = newGrid;
+            if (i >= 50)
+            {
+                newGrid.SetActive(false);
+            }
 
             Renderer rend = newGrid.GetComponent<Renderer>();
             if (rend != null) 
@@ -201,6 +208,20 @@ public class BoardManager : MonoBehaviour
             return 0;
 
         return generatedGridValues[index];
+    }
+
+    // 全体妨害などでゴールが伸びたとき、新しいゴール位置までのマスを盤面に表示する
+    public void RevealGridsUpTo(int maxGoalIndex)
+    {
+        if (generatedGridObjects == null) return;
+        int limit = Mathf.Min(maxGoalIndex, generatedGridObjects.Length - 1);
+        for (int i = 0; i <= limit; i++)
+        {
+            if (generatedGridObjects[i] != null && !generatedGridObjects[i].activeSelf)
+            {
+                generatedGridObjects[i].SetActive(true);
+            }
+        }
     }
 
 }

@@ -123,6 +123,7 @@ public class CardManager : MonoBehaviour
             script.SetCard(random);
         }
 
+        destroyList.Add(addCard);
         // 踏んだプレイヤーだけのリストに＋1枚追加
         player.MyCards.Add(addCard);
 

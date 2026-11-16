@@ -108,13 +108,18 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 break;
             
             case 8: // イカサマ4番：全体妨害
+                int maxGoal = 49;
                 foreach (Player p in allPlayers)
                 {
                     if (p != currentPlayer)
                     {
                         p.goalIndex = Mathf.Min(90, p.goalIndex + 10);
                     }
+                    if (p.goalIndex > maxGoal) maxGoal = p.goalIndex;
                 }
+                BoardManager bm = FindAnyObjectByType<BoardManager>();
+                if (bm != null) bm.RevealGridsUpTo(maxGoal);
+
                 currentPlayer.hideRankPermanent = true;
                 Debug.Log("【イカサマ4】全体妨害：他全員のゴール+10（代償：順位不可視）");
                 break;

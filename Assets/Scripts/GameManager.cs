@@ -42,8 +42,25 @@ public class GameManager : MonoBehaviour
         //players[currentTurn].Move(diceValue);
 
     }
+    private int turnStartLocation = 0; // 移動前の位置を記録（ExecutePlayerMoveでセット）
     public void OnPlayerMoveComplete()
     {
+        Player movedPlayer = players[currentTurn];
+
+        // 今回の真の移動マス数を記録
+        movedPlayer.lastTrueMoveSteps = movedPlayer.PlayerCurrentLocation - turnStartLocation;
+    
+        // 出目偽装(6番)の次ラウンド・次々ラウンド終了時（残り2または1）に偽装値(2〜12)を決定
+        if (movedPlayer.disguiseMoveRounds == 2 || movedPlayer.disguiseMoveRounds == 1)
+        {
+            movedPlayer.lastDisguisedMoveSteps = UnityEngine.Random.Range(2, 13);
+        }
+        else
+        {
+            movedPlayer.lastDisguisedMoveSteps = movedPlayer.lastTrueMoveSteps;
+        }
+        movedPlayer.TickPenaltyRounds(); // ラウンド数減らす
+
         UpdateRemainingGridUI();
         
         // プレイヤー数（3人）に合わせて 0 -> 1 -> 2 -> 0 と自動ループ
@@ -89,24 +106,28 @@ public class GameManager : MonoBehaviour
 
     public void UpdateRemainingGridUI()
     {
-        if (boardManager == null || remainingGridText == null) return;
+        Player currentPlayer = players[currentTurn];
+        int currentLocation = currentPlayer.PlayerCurrentLocation;
         
-        int totalWaypoints = boardManager.GetTotalWaypoints(); // 全体のマス数を取得
-        int currentLocation = players[currentTurn].PlayerCurrentLocation; // 現在ターンのプレイヤーの位置を取得
-        int remainingGrids = (totalWaypoints - 1) - currentLocation;
-        if (remainingGrids < 0) remainingGrids = 0;
+        int remainingGrids = Mathf.Max(0, currentPlayer.goalIndex - currentLocation);
 
-        remainingGridText.text = $"P{currentTurn + 1} REMAIN: {remainingGrids}";
+        // 強行突破(2番)代償の残りマス文字化け判定
+        bool isMyRemainHidden = currentPlayer.IsInfoHidden(currentPlayer.hideRemainGridPermanent);
+        string myRemainStr = currentPlayer.MaskTextIfHidden(remainingGrids.ToString(), isMyRemainHidden);
+        remainingGridText.text = $"P{currentTurn + 1} REMAIN: {myRemainStr}";
 
-        
         if (otherRemainingGridText != null)
         {
+            // 全体妨害(4番)代償の他プレイヤー残りマス/順位文字化け判定
+            bool isOtherHidden = currentPlayer.IsInfoHidden(currentPlayer.hideRankPermanent);
             string otherDisplay = "";
             for (int i = 0; i < players.Length; i++)
             {
                 if (i == currentTurn) continue; 
-                int otherRemain = Mathf.Max(0, (totalWaypoints - 1) - players[i].PlayerCurrentLocation);
-                otherDisplay += $"P{i + 1} REMAIN: {otherRemain} ";
+                // 他プレイヤーもそれぞれの goalIndex を使う！
+                int otherRemain = Mathf.Max(0, players[i].goalIndex - players[i].PlayerCurrentLocation);
+                string otherRemainStr = currentPlayer.MaskTextIfHidden(otherRemain.ToString(), isOtherHidden);
+                otherDisplay += $"P{i + 1} REMAIN: {otherRemainStr} ";
             }
             otherRemainingGridText.text = otherDisplay;
         }
@@ -135,4 +156,7 @@ public class GameManager : MonoBehaviour
         int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
         currentPlayer.Move(finalSteps);
     }
+
+
+    
 }
