@@ -3,6 +3,7 @@ using UnityEngine.UI; // ボタン制御のために追加
 using TMPro;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 // ターンの進行状態
 public enum TurnPhase
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerChange playerChange; //PlayerChange.csにアクセス
 
     [SerializeField] private CardManager cardManager;    //カードを生成
+    [SerializeField] private GameObject skipCardButton;
 
     void Start()
     {
@@ -79,10 +81,11 @@ public class GameManager : MonoBehaviour
         Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
     }
 
-    public void ExecutePlayerMove()
+        public void ExecutePlayerMove()
     {
         if (currentPhase != TurnPhase.WaitingForCard) return;
 
+        if (skipCardButton != null) skipCardButton.SetActive(false); // 移動開始時に隠す
         currentPhase = TurnPhase.Moving; // 移動中ロック
         Player currentPlayer = GetCurrentPlayer();
 
@@ -93,6 +96,25 @@ public class GameManager : MonoBehaviour
         }
         int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
         currentPlayer.Move(finalSteps);
+    }
+        public void OnSkipCardButton()
+    {
+        if (currentPhase != TurnPhase.WaitingForCard) return;
+
+        Debug.Log("カードを使用せずに進みます");
+
+        // 画面に表示されている手札カードを消す
+        if (cardManager != null)
+        {
+            foreach (GameObject card in cardManager.destroyList)
+            {
+                if (card != null) Destroy(card);
+            }
+            cardManager.destroyList.Clear();
+        }
+
+        // カード効果なしでそのまま移動を実行
+        ExecutePlayerMove();
     }
     private int turnStartLocation = 0; // 移動前の位置を記録（ExecutePlayerMoveでセット）
     public void OnPlayerMoveComplete()
