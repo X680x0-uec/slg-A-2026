@@ -176,7 +176,7 @@ public class Player : MonoBehaviour
         lastUsedCardId = -1;
     }
 
-public bool HasUsedTargetCard()
+    public bool HasUsedTargetCard()
     {
         return lastUsedCardId >= 5 && lastUsedCardId <= 10; 
          //この範囲内のカードIDがイカサマカードとして判定される。

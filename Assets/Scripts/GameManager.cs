@@ -12,6 +12,7 @@ public enum TurnPhase
     WaitingForCard,     // カード選択待ち
     Moving,             // コマ移動・マス効果処理中
     PlayerChange,       // プレイヤーを入れ替えるフェーズ
+    Goal,               // ゴール演出
 }
 
 public class GameManager : MonoBehaviour
