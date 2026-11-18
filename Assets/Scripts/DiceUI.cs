@@ -11,6 +11,7 @@ public class DiceUI : MonoBehaviour
     private UnityEngine.UI.Image diceImage;
 
     private int diceAnimeFlame;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

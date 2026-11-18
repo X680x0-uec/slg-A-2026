@@ -34,6 +34,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     {
         DiceValue = diceValue;
     }
+
     public void SetCard(int id)
     {
         cardId = id;    //カードIDを受け取る
@@ -157,7 +158,6 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 Debug.Log("【イカサマ5】神経妨害：他全員に全代償2R＆自分は全情報閲覧2R（代償：マス番号不可視＆次Rダイス不可）");
                 break;
 
-            
             case 10: // イカサマ6番：出目偽装
                 currentPlayer.disguiseMoveRounds = 3;
                 currentPlayer.hideOtherLastMovePermanent = true;

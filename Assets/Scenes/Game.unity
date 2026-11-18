@@ -3888,12 +3888,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DiceUI
   diceManager: {fileID: 1968807064}
   diceSprites:
-  - {fileID: 5450376192650610091, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 1526066181, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -807173463, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -1604454040, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 2073636114, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -2055672618, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
+  - {fileID: 117070855636090705, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 407291059, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1661253218, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1109328662, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 586735004, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -249901487, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1629686110, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -374131978, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1631286416, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1679409475, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
 --- !u!114 &989212649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8485,12 +8489,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DiceUI
   diceManager: {fileID: 1968807064}
   diceSprites:
-  - {fileID: 5450376192650610091, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 1526066181, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -807173463, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -1604454040, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 2073636114, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -2055672618, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
+  - {fileID: 117070855636090705, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 407291059, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1661253218, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1109328662, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 586735004, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -249901487, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1629686110, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -374131978, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1631286416, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1679409475, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
 --- !u!1001 &6573995151768918993
 PrefabInstance:
   m_ObjectHideFlags: 0
