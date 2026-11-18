@@ -58,7 +58,6 @@ public class Dice : MonoBehaviour
 
         audioSource.PlayOneShot(rollSE);
 
-        Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer == null)
         {
             Debug.LogError("現在のプレイヤーを取得できませんでした！");
