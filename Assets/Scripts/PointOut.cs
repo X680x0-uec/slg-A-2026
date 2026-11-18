@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+//指摘ボタン押したら「あなたはプレイヤー〇ですか？」のボタン押してから画面切り替えした方が分かりやすそう
+//ただ、必須の機能ではないので後回し
+
 public class PointOut : MonoBehaviour
 {
     [SerializeField] public GameManager gameManager;
@@ -13,51 +16,81 @@ public class PointOut : MonoBehaviour
     [SerializeField] private Button accuseOther2Button;     // 他プレイヤー2を指摘するボタン
     [SerializeField] private TMP_Text accuseOther2Text;     // ボタン2のテキスト
     [SerializeField] private Button skipAccuseButton;       // 「指摘しない」ボタン
+    [SerializeField] private TMP_Text WhoText;              // 誰のターンかを表示
 
+    private int PointOutTurn;   //誰の指摘の番か
+
+    void Start()
+    {
+        accusationPanel.SetActive(false);
+    }
+    
     //パネルを表示する
     public void ShowPanel()
     {
         gameManager.currentPhase = TurnPhase.AccusationPhase;
+
         //表示する
         accusationPanel.SetActive(true);
 
-        //3人分繰り返す
-        for (int turn = 0; turn < gameManager.players.Length; turn++)
+        // 自分以外の2人をリストアップ
+        List<Player> otherPlayers = new List<Player>();
+        for (int i = 0; i < gameManager.players.Length; i++)
         {
-            // 自分以外の2人をリストアップ
-            List<Player> otherPlayers = new List<Player>();
-            for (int i = 0; i < gameManager.players.Length; i++)
+            if (i != gameManager.currentTurn && gameManager.players[i] != null)
             {
-                if (i != turn && gameManager.players[i] != null)
-                {
-                    otherPlayers.Add(gameManager.players[i]);
-                }
-            }
-
-            // 他プレイヤー1のボタン設定
-            if (otherPlayers.Count >= 1 && accuseOther1Button != null)
-            {
-                Player target1 = otherPlayers[0];
-                if (accuseOther1Text != null) accuseOther1Text.text = $"{target1.name} を指摘";
-                accuseOther1Button.onClick.RemoveAllListeners();
-                accuseOther1Button.onClick.AddListener(() => OnAccusePlayer(target1));
-            }
-
-            // 他プレイヤー2のボタン設定
-            if (otherPlayers.Count >= 2 && accuseOther2Button != null)
-            {
-                Player target2 = otherPlayers[1];
-                if (accuseOther2Text != null) accuseOther2Text.text = $"{target2.name} を指摘";
-                accuseOther2Button.onClick.RemoveAllListeners();
-                accuseOther2Button.onClick.AddListener(() => OnAccusePlayer(target2));
+                otherPlayers.Add(gameManager.players[i]);
             }
         }
+
+        // 誰のターンかを表示
+        if (WhoText != null)
+        {
+            WhoText.text = $"プレイヤー {gameManager.currentTurn + 1} のターン\nイカサマを指摘する？";
+        }
+
+        // 他プレイヤー1のボタン設定
+        if (otherPlayers.Count >= 1 && accuseOther1Button != null)
+        {
+            Player target1 = otherPlayers[0];
+            if (accuseOther1Text != null) accuseOther1Text.text = $"{target1.name} を指摘";
+            accuseOther1Button.onClick.RemoveAllListeners();
+            accuseOther1Button.onClick.AddListener(() => OnAccusePlayer(target1));
+        }
+
+        // 他プレイヤー2のボタン設定
+        if (otherPlayers.Count >= 2 && accuseOther2Button != null)
+        {
+            Player target2 = otherPlayers[1];
+            if (accuseOther2Text != null) accuseOther2Text.text = $"{target2.name} を指摘";
+            accuseOther2Button.onClick.RemoveAllListeners();
+            accuseOther2Button.onClick.AddListener(() => OnAccusePlayer(target2));
+        }
+    }
+
+
+    // 「指摘しない」を選んだときの処理
+    public void OnSkipAccusation()
+    {
+        if (gameManager.currentPhase != TurnPhase.AccusationPhase)
+        {
+            Debug.Log("まだそのときではない");
+            return;
+        }
+
+        Debug.Log($"プレイヤー {gameManager.currentTurn + 1} は指摘を行いませんでした。");
+        //次の人の指摘へ
+        NextPointOut();
     }
 
     // どちらか片方を指摘したときの判定処理
     public void OnAccusePlayer(Player targetPlayer)
     {
-        if (gameManager.currentPhase != TurnPhase.AccusationPhase) return;
+        if (gameManager.currentPhase != TurnPhase.AccusationPhase)
+        {
+            Debug.Log("まだそのときではない");
+            return;
+        }
 
         Player currentPlayer = GetCurrentPlayer();
         Debug.Log($"プレイヤー {gameManager.currentTurn + 1} が {targetPlayer.name} を指摘しました！");
@@ -80,6 +113,9 @@ public class PointOut : MonoBehaviour
             // 失敗（冤罪）時のペナルティ出目-4
             currentPlayer.diceModifier -=4;
         }
+
+        //次の人の指摘へ
+        NextPointOut();
     }
 
     public Player GetCurrentPlayer()
@@ -89,5 +125,33 @@ public class PointOut : MonoBehaviour
             return gameManager.players[gameManager.currentTurn];
         }
         return null;
+    }
+
+    public void EnterDicePhase()
+    {
+        gameManager.currentPhase = TurnPhase.WaitingForDice;
+
+        gameManager.StartTurn();
+    }
+
+    public void NextPointOut()
+    {
+        if (accusationPanel != null)
+        {
+            accusationPanel.SetActive(false);
+        }
+        
+        if (gameManager.currentTurn < gameManager.players.Length - 1)
+        {
+            //次の人の指摘
+            gameManager.currentTurn = (gameManager.currentTurn + 1) % gameManager.players.Length;
+            ShowPanel();
+        }
+        else
+        {
+            gameManager.currentTurn = (gameManager.currentTurn + 1) % gameManager.players.Length;
+            //最後の人の指摘が終わったら盤面に戻る
+            EnterDicePhase();
+        }
     }
 }
