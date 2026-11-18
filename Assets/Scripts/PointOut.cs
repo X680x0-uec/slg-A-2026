@@ -22,6 +22,12 @@ public class PointOut : MonoBehaviour
 
     void Start()
     {
+        if (skipAccuseButton != null)
+        {
+            skipAccuseButton.onClick.RemoveAllListeners();
+            skipAccuseButton.onClick.AddListener(OnSkipAccusation);
+        }
+
         accusationPanel.SetActive(false);
     }
     
