@@ -140,6 +140,9 @@ Player currentPlayer = GetCurrentPlayer();
             // 二重指摘を防ぐため記録をリセット
             targetPlayer.ResetLastUsedCard();
 
+            currentPlayer.diceModifier += 4;
+            targetPlayer.diceModifier -= 10; // 指摘成功されたら-10
+
             // ここに指摘成功時のボーナス・ペナルティを追加できる
         }
         else
