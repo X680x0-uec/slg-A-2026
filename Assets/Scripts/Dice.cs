@@ -10,6 +10,8 @@ public class Dice : MonoBehaviour
     [SerializeField] private TextMeshProUGUI diceText;
     [SerializeField] private GameObject diceUiPar;
     [SerializeField] private Sprite[] diceSprites; //サイコロの出目の画像を格納
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip rollSE;      //効果音用
     private GameObject[] diceUIs; //サイコロのオブジェクト
     private Image[] diceUIImages; //サイコロのImageコンポーネント
     [SerializeField] private bool isDiceRolling = false;
@@ -49,6 +51,8 @@ public class Dice : MonoBehaviour
         }
 
         isDiceRolling = false;
+
+        audioSource.PlayOneShot(rollSE);
 
         Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer == null)
