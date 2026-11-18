@@ -42,6 +42,8 @@ public class PointOut : MonoBehaviour
         //表示する
         accusationPanel.SetActive(true);
 
+        gameManager.UpdateRemainingGridUI();
+
 Player currentPlayer = GetCurrentPlayer();
         bool isMoveHidden = currentPlayer != null && currentPlayer.IsInfoHidden(currentPlayer.hideOtherLastMovePermanent);
 

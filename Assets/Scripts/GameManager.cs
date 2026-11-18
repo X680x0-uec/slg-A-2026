@@ -148,6 +148,9 @@ public class GameManager : MonoBehaviour
         
         if (otherRemainingGridText != null)
         {
+            // 指摘フェーズのときだけ、他プレイヤー全員の残りマス数を表示する
+            if (currentPhase == TurnPhase.AccusationPhase)
+            {
             string otherDisplay = "";
             for (int i = 0; i < players.Length; i++)
             {
@@ -157,6 +160,12 @@ public class GameManager : MonoBehaviour
             }
             otherRemainingGridText.text = otherDisplay;
         }
+        else
+            {
+                // サイコロのターンなど、指摘フェーズ以外は非表示（空）にする
+                otherRemainingGridText.text = "";
+            }
+    }
     }
 
     public Player GetCurrentPlayer()
