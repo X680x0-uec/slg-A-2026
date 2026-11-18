@@ -56,49 +56,28 @@ public class CardManager : MonoBehaviour
         List<int> availableCardIds = new List<int>();
 
         // 通常カード（ID: 0〜4）は毎回山札に入っている
-        if (currentPlayer.forceCheatingNextTurn)
+        for (int i = 0; i <= 4; i++)
         {
-            // イカサマ強制状態：未使用のイカサマカード(5〜10)だけを山札に入れる！
-            currentPlayer.forceCheatingNextTurn = false;
-            for (int i = 5; i <= 10; i++)
-            {
-                int cheatIndex = i - 5;
-                if (i < cardData.CardDataList.Count && !currentPlayer.usedCheatingCards[cheatIndex])
-                {
-                    availableCardIds.Add(i);
-                }
-            }
-            // 万が一イカサマを6枚全部使い切っていた場合だけ通常カードを入れる（手札0枚防止）
-            if (availableCardIds.Count == 0)
-            {
-                for (int i = 0; i <= 4; i++)
-                {
-                    if (i < cardData.CardDataList.Count) availableCardIds.Add(i);
-                }
-            }
+            if (i < cardData.CardDataList.Count) availableCardIds.Add(i);
         }
-        else
-        {
-            for (int i = 0; i <= 4; i++)
-            {
-                if (i < cardData.CardDataList.Count) availableCardIds.Add(i);
-            }
 
-            // イカサマカード（ID: 5〜10）は「未使用（usedCheatingCards[i - 5] == false）」のものだけ山札に入れる
-            for (int i = 5; i <= 10; i++)
+        // イカサマカード（ID: 5〜10）は「未使用（usedCheatingCards[i - 5] == false）」のものだけ山札に入れる
+        for (int i = 5; i <= 10; i++)
+        {
+            int cheatIndex = i - 5; // 0〜5
+            if (i < cardData.CardDataList.Count && !currentPlayer.usedCheatingCards[cheatIndex])
             {
-                int cheatIndex = i - 5; // 0〜5
-                if (i < cardData.CardDataList.Count && !currentPlayer.usedCheatingCards[cheatIndex])
-                {
-                    availableCardIds.Add(i);
-                }
+                availableCardIds.Add(i);
             }
         }
 
         // 2. 山札から重複なしで最大3枚引く
-        int targetCount = 3 + currentPlayer.extraCardCount;
-        int drawCount = Mathf.Min(targetCount, availableCardIds.Count);
-        float startX = -((drawCount - 1) * 110f) / 2f;
+        int drawCount = Mathf.Min(3, availableCardIds.Count);
+        Vector3[] card_pos = {
+            new Vector3(-110, -150, 0),
+            new Vector3(0, -150, 0),
+            new Vector3(110, -150, 0),
+        };
 
         for (int i = 0; i < drawCount; i++)
         {
@@ -106,8 +85,7 @@ public class CardManager : MonoBehaviour
             int pickedCardId = availableCardIds[randIdx];
             availableCardIds.RemoveAt(randIdx); // 重複防止
 
-            Vector3 pos = new Vector3(startX + (i * 110f), -150f, 0f);
-            GameObject cardObj = Instantiate(cardPrefab, pos, Quaternion.identity);
+            GameObject cardObj = Instantiate(cardPrefab, card_pos[i], Quaternion.identity);
             cardObj.transform.SetParent(canvas.transform, false);
 
             CardScript script = cardObj.GetComponent<CardScript>();
@@ -128,10 +106,26 @@ public class CardManager : MonoBehaviour
 
         // 1/3で疑惑、2/3で通常の判定
         bool isSuspicion = (Random.Range(0, 3) == 0);
-        player.extraCardCount++;
         Debug.Log($"【カード獲得】{player.name} が {(isSuspicion ? "疑惑" : "通常")}カードを獲得！");
 
         int length = cardData.CardDataList.Count;
+        int random = Random.Range(0, length);
+
+        int cardIndex = player.MyCards.Count; // 0,1,2...　カード枚数
+        Vector3 spawnPos = new Vector3(-110 + (cardIndex*110),-150,0);
+
+        GameObject addCard = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
+        addCard.transform.SetParent(canvas.transform, false);
+
+        CardScript script = addCard.GetComponent<CardScript>();
+        if (script != null)
+        {
+            script.SetCard(random);
+        }
+
+        // 踏んだプレイヤーだけのリストに＋1枚追加
+        player.MyCards.Add(addCard);
+
         // 表示と並べ順を更新（そのプレイヤーだけ4枚になる）
         //UpdateCardVisibility();
     }
