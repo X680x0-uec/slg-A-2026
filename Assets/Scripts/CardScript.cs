@@ -120,7 +120,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 }
                 cardManager.destroyList.Clear();
 
-                // ★ 2. 現実拒否パネルを開く
+                // パネルを開く
                 gameManager.OpenRealityDenialUI();
                 return;
             

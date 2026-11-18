@@ -204,7 +204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 600, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &52821806
@@ -962,7 +962,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -450, y: 0}
+  m_AnchoredPosition: {x: -400, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &307703719
@@ -1093,7 +1093,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 200}
+  m_AnchoredPosition: {x: -130, y: 150}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &355972699
@@ -1369,7 +1369,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -500, y: 0}
+  m_AnchoredPosition: {x: -600, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &435524645
@@ -1502,7 +1502,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -350, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &488083791
@@ -1648,12 +1648,14 @@ MonoBehaviour:
   gridSpacing: 2
   startPosition: {x: 0, y: 0, z: 0}
   useRandomMode: 1
-  advanceCount: 6
-  backCount: 5
-  changeDiceRollCount: 3
-  getCardCount: 3
+  advanceCount: 15
+  backCount: 15
+  changeDiceRollCount: 5
+  getCardCount: 5
   minEffectValue: 3
   maxEffectValue: 3
+  returnCheatingcardCount: 3
+  forcedCheatingCount: 5
   specialGrids:
   - gridIndex: 3
     effect: 4
@@ -2070,7 +2072,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 400, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &620320787
@@ -2340,7 +2342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 200, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &718944443
@@ -2628,7 +2630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -400, y: 0}
+  m_AnchoredPosition: {x: -200, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &869401582
@@ -3360,10 +3362,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
   hideOwnDicePermanent: 0
@@ -4197,10 +4204,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
   hideOwnDicePermanent: 0
@@ -4342,10 +4354,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   usedCheatingCards: 000000000000
   goalIndex: 49
   hideOwnDicePermanent: 0

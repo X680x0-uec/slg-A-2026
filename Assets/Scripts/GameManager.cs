@@ -68,6 +68,10 @@ public class GameManager : MonoBehaviour
 
         UpdateActiveCamera(); // ターン交代時にカメラ切り替え
 
+        if (boardManager != null)
+        {
+            boardManager.RevealGridsUpTo(players[currentTurn].goalIndex);
+        }
         if (cardManager != null)
         {
             cardManager.UpdateCardVisibility();
@@ -234,25 +238,30 @@ public class GameManager : MonoBehaviour
         switch (choiceIndex)
         {
             case 0: chosenEffect = GridEffect.ForcedCheating; break;     // 1. イカサマ誘導マス
-            case 1: chosenEffect = GridEffect.GetCard; break;            // 2. カード獲得/変動マス
-            case 2: chosenEffect = GridEffect.Advance; chosenValue = 3; break; // 3-a. +マス（盤面設定値）
-            case 3: chosenEffect = GridEffect.Back; chosenValue = 3; break;    // 3-b. -マス（盤面設定値）
+            case 1: chosenEffect = GridEffect.GetCard; break;            // 2. カード獲得マス
+            case 2: chosenEffect = GridEffect.Advance; chosenValue = 3; break; // 3-a. +3マス
+            case 3: chosenEffect = GridEffect.Back; chosenValue = 3; break;    // 3-b. -3マス
             case 4: chosenEffect = GridEffect.ChangeDiceroll; break;     // 5. 出目変化マス
             case 5: chosenEffect = GridEffect.RetuenCheatingCard; break; // 6. イカサマ復活マス
             case 6: chosenEffect = GridEffect.Normal; break;             // 7. 空白マス
         }
 
-        // 移動先のマス効果を強制書き換え
-        int landingIndex = Mathf.Clamp(currentPlayer.PlayerCurrentLocation + CardScript.DiceValue + currentPlayer.diceModifier, 0, 90);
+        // 選択した直後に、止まる予定のマスの見た目（色）を変更する！
+        int landingIndex = Mathf.Clamp(currentPlayer.PlayerCurrentLocation + CardScript.DiceValue + currentPlayer.diceModifier, 0, currentPlayer.goalIndex);
         if (boardManager != null)
         {
             boardManager.OverrideGridEffect(landingIndex, chosenEffect, chosenValue);
         }
 
+        // 止まったマスの種類に関係なく、移動完了後に選んだ効果を無条件で発動させる
+        currentPlayer.hasForcedGridEffect = true;
+        currentPlayer.forcedGridEffect = chosenEffect;
+        currentPlayer.forcedGridValue = chosenValue;
+
         // 代償：マス効果の詳細が永続不可視
         currentPlayer.hideGridDetailPermanent = true;
 
-        Debug.Log($"【イカサマ3】現実拒否確定：マス[{landingIndex}]を {chosenEffect} に変更（代償：マス効果詳細不可視）");
+        Debug.Log($"【イカサマ3】現実拒否確定：{chosenEffect} の効果を発動予約（代償：マス効果詳細不可視）");
         ExecutePlayerMove();
     }
     
