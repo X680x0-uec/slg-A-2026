@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerChange playerChange; //PlayerChange.csにアクセス
 
     [SerializeField] private CardManager cardManager;    //カードを生成
+[SerializeField] private GameObject skipCardButton;  // 「カードを使用しない」
+
 
     void Start()
     {
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour
     public void StartTurn()
     {
         if (currentPhase != TurnPhase.WaitingForDice) return;
+        if (skipCardButton != null) skipCardButton.SetActive(false); // 追加：サイコロ前は隠す
 
         // 新しくターンが来たプレイヤーの「1周前のカード使用記録」をリセット
         Player currentPlayer = GetCurrentPlayer();
@@ -74,6 +77,7 @@ public class GameManager : MonoBehaviour
         if (currentPhase != TurnPhase.WaitingForDice) return;
 
         currentPhase = TurnPhase.WaitingForCard; // 次はカード選択待ち
+        if (skipCardButton != null) skipCardButton.SetActive(true); // サイコロ後に表示する
         Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
     }
 
@@ -81,6 +85,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentPhase != TurnPhase.WaitingForCard) return;
 
+        if (skipCardButton != null) skipCardButton.SetActive(false); // 移動開始時に隠す
         currentPhase = TurnPhase.Moving; // 移動中ロック
         Player currentPlayer = GetCurrentPlayer();
 
@@ -92,6 +97,26 @@ public class GameManager : MonoBehaviour
         int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
         currentPlayer.Move(finalSteps);
     }
+        public void OnSkipCardButton()
+    {
+        if (currentPhase != TurnPhase.WaitingForCard) return;
+
+        Debug.Log("カードを使用せずに進みます");
+
+        // 画面に表示されている手札カードを消す
+        if (cardManager != null)
+        {
+            foreach (GameObject card in cardManager.destroyList)
+            {
+                if (card != null) Destroy(card);
+            }
+            cardManager.destroyList.Clear();
+        }
+
+        // カード効果なしでそのまま移動を実行
+        ExecutePlayerMove();
+    }
+
     private int turnStartLocation = 0; // 移動前の位置を記録（ExecutePlayerMoveでセット）
     public void OnPlayerMoveComplete()
     {
@@ -212,6 +237,7 @@ public class GameManager : MonoBehaviour
     // =========================================================
     public void OpenDiceFalsifyUI()
     {
+        if (skipCardButton != null) skipCardButton.SetActive(false); //カード選択時に「使用しない」を消す
         currentFalsifyDelta = 0;
         if (diceFalsifyPanel != null) diceFalsifyPanel.SetActive(true);
         UpdateFalsifyPreviewText();
@@ -261,6 +287,7 @@ public class GameManager : MonoBehaviour
     // =========================================================
     public void OpenRealityDenialUI()
     {
+        if (skipCardButton != null) skipCardButton.SetActive(false); // カード選択時に「使用しない」を消す
         if (realityDenialPanel != null) realityDenialPanel.SetActive(true);
     }
 
