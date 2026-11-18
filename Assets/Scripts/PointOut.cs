@@ -1,10 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
-
-//指摘ボタン押したら「あなたはプレイヤー〇ですか？」のボタン押してから画面切り替えした方が分かりやすそう
-//ただ、必須の機能ではないので後回し
 
 public class PointOut : MonoBehaviour
 {
@@ -18,12 +16,11 @@ public class PointOut : MonoBehaviour
     [SerializeField] private Button accuseOther2Button;     // 他プレイヤー2を指摘するボタン
     [SerializeField] private TMP_Text accuseOther2Text;     // ボタン2のテキスト
     [SerializeField] private Button skipAccuseButton;       // 「指摘しない」ボタン
-    [SerializeField] private TMP_Text WhoText;              // 誰のターンかを表示
+    [SerializeField] private TMP_Text WhoText;              // 誰のターンか・指摘結果を表示
     [SerializeField] private TMP_Text other1MoveText;       // 他プレイヤー1の進んだマス数表示用
     [SerializeField] private TMP_Text other2MoveText;       // 他プレイヤー2の進んだマス数表示用
 
-
-    private int PointOutTurn;   //誰の指摘の番か
+    private bool isShowingResult = false; // 結果演出中の連打防止フラグ
 
     void Start()
     {
@@ -33,14 +30,16 @@ public class PointOut : MonoBehaviour
             skipAccuseButton.onClick.AddListener(OnSkipAccusation);
         }
 
-        accusationPanel.SetActive(false);
+        if (accusationPanel != null) accusationPanel.SetActive(false);
     }
-    
-    //パネルを表示する
+
+    // パネルを表示する
     public void ShowPanel()
     {
         gameManager.currentPhase = TurnPhase.AccusationPhase;
+        isShowingResult = false;
 
+        // 指摘画面に入った瞬間に、前のプレイヤーのサイコロ出目を隠す
         Dice dice = FindAnyObjectByType<Dice>();
         if (dice != null) dice.RefreshDiceResult();
 
@@ -55,12 +54,21 @@ public class PointOut : MonoBehaviour
             cm.destroyList.Clear();
         }
 
-        //表示する
-        accusationPanel.SetActive(true);
-
+        if (accusationPanel != null) accusationPanel.SetActive(true);
         gameManager.UpdateRemainingGridUI();
 
         Player currentPlayer = GetCurrentPlayer();
+
+        // CPU の指摘番なら自動コルーチンへ
+        if (currentPlayer != null && currentPlayer.isCpu)
+        {
+            StartCoroutine(AutoCpuAccusationRoutine(currentPlayer));
+            return;
+        }
+
+        // 人間プレイヤーの場合はボタン類を表示状態に戻す
+        SetAccusationButtonsActive(true);
+
         bool isMoveHidden = currentPlayer != null && currentPlayer.IsInfoHidden(currentPlayer.hideOtherLastMovePermanent);
 
         // 自分以外の2人をリストアップ
@@ -73,7 +81,6 @@ public class PointOut : MonoBehaviour
             }
         }
 
-        // 誰のターンかを表示
         if (WhoText != null)
         {
             WhoText.text = $"プレイヤー {gameManager.currentTurn + 1} のターン\nイカサマを指摘する？";
@@ -123,53 +130,126 @@ public class PointOut : MonoBehaviour
     // 「指摘しない」を選んだときの処理
     public void OnSkipAccusation()
     {
-        if (gameManager.currentPhase != TurnPhase.AccusationPhase)
-        {
-            Debug.Log("まだそのときではない");
-            return;
-        }
+        if (gameManager.currentPhase != TurnPhase.AccusationPhase || isShowingResult) return;
 
         Debug.Log($"プレイヤー {gameManager.currentTurn + 1} は指摘を行いませんでした。");
-        //次の人の指摘へ
         NextPointOut();
     }
 
-    // どちらか片方を指摘したときの判定処理
+    // どちらか片方を指摘したときの判定処理（人間・CPU共通）
     public void OnAccusePlayer(Player targetPlayer)
     {
-        if (gameManager.currentPhase != TurnPhase.AccusationPhase)
-        {
-            Debug.Log("まだそのときではない");
-            return;
-        }
+        if (gameManager.currentPhase != TurnPhase.AccusationPhase || isShowingResult) return;
 
         Player currentPlayer = GetCurrentPlayer();
-        Debug.Log($"プレイヤー {gameManager.currentTurn + 1} が {targetPlayer.name} を指摘しました！");
+        if (currentPlayer == null || targetPlayer == null) return;
 
-        if (targetPlayer.HasUsedTargetCard())
+        bool isSuccess = targetPlayer.HasUsedTargetCard();
+
+        if (isSuccess)
         {
-            // 【指摘成功】対象者がイカサマカード（ID 5〜10）を使っていた場合
-            Debug.Log($"【指摘成功！】{targetPlayer.name} はイカサマカード（ID:{targetPlayer.lastUsedCardId}）を使用していました！");
-
-            // 二重指摘を防ぐため記録をリセット
-            targetPlayer.ResetLastUsedCard();
-
+            Debug.Log($"【指摘成功！】{currentPlayer.name} が {targetPlayer.name} のイカサマ（ID:{targetPlayer.lastUsedCardId}）を見破った！");
+            // ※ ここでは ResetLastUsedCard() を呼ばない！（3人目も同じ相手を指摘できるようにするため）
             currentPlayer.diceModifier += 4;
-            targetPlayer.diceModifier -= 10; // 指摘成功されたら-10
-
-            // ここに指摘成功時のボーナス・ペナルティを追加できる
+            targetPlayer.diceModifier -= 10;
         }
         else
         {
-            // 【指摘失敗】対象者はイカサマカードを使っていなかった場合
-            Debug.Log($"【指摘失敗…】{targetPlayer.name} はイカサマカードを使っていませんでした。ペナルティで出目−４！");
-
-            // 失敗（冤罪）時のペナルティ出目-4
-            currentPlayer.diceModifier -=4;
+            Debug.Log($"【指摘失敗…】{currentPlayer.name} の冤罪！{targetPlayer.name} はイカサマをしていなかった。");
+            currentPlayer.diceModifier -= 4;
         }
 
-        //次の人の指摘へ
+        // 人間・CPU 共通で結果テキストを 1.5 秒表示してから次へ
+        StartCoroutine(ShowAccusationResultRoutine(currentPlayer, targetPlayer, isSuccess));
+    }
+
+    private IEnumerator ShowAccusationResultRoutine(Player accuser, Player target, bool isSuccess)
+    {
+        isShowingResult = true;
+
+        // ボタンと移動数テキストを一時的に隠して結果メッセージを見やすくする
+        SetAccusationButtonsActive(false);
+        if (other1MoveText != null) other1MoveText.text = "";
+        if (other2MoveText != null) other2MoveText.text = "";
+
+        if (WhoText != null)
+        {
+            WhoText.text = isSuccess
+                ? $"{accuser.name} が {target.name} を指摘！\n<color=red>【指摘成功！】</color>"
+                : $"{accuser.name} が {target.name} を指摘！\n<color=blue>【指摘失敗…】</color>";
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+        isShowingResult = false;
         NextPointOut();
+    }
+
+    private IEnumerator AutoCpuAccusationRoutine(Player cpu)
+    {
+        SetAccusationButtonsActive(false);
+        if (other1MoveText != null) other1MoveText.text = "";
+        if (other2MoveText != null) other2MoveText.text = "";
+        if (WhoText != null) WhoText.text = $"{cpu.name} が思考中…";
+
+        yield return new WaitForSeconds(0.7f);
+
+        List<Player> others = new List<Player>();
+        Player obviousSuspect = null; // 移動量が1以下 or 13以上の明らかな容疑者
+        Player actualCheater = null;  // 実際にイカサマを使った相手（勘で気づく用）
+
+        for (int i = 0; i < gameManager.players.Length; i++)
+        {
+            Player other = gameManager.players[i];
+            if (other == null || other == cpu) continue;
+            others.Add(other);
+
+            int moved = other.GetDisplayMoveStepsForOthers();
+            if (moved <= 1 || moved >= 13)
+            {
+                obviousSuspect = other;
+            }
+            if (other.HasUsedTargetCard())
+            {
+                actualCheater = other;
+            }
+        }
+
+        Player chosenTarget = null;
+
+        // 1. 移動量が明らかに異常（1以下 or 13以上）なら 90% で指摘
+        if (obviousSuspect != null && Random.value < 0.90f)
+        {
+            chosenTarget = obviousSuspect;
+        }
+        // 2. 数値が普通でも、実際にイカサマを使っていれば 50% の勘で指摘してくる
+        else if (actualCheater != null && Random.value < 0.50f)
+        {
+            chosenTarget = actualCheater;
+        }
+        // 3. 誰も使っていなくても 25% で誰かを疑う（冤罪リスク）
+        else if (others.Count > 0 && Random.value < 0.25f)
+        {
+            chosenTarget = others[Random.Range(0, others.Count)];
+        }
+
+        if (chosenTarget != null)
+        {
+            OnAccusePlayer(chosenTarget);
+        }
+        else
+        {
+            if (WhoText != null) WhoText.text = $"{cpu.name} は指摘を行いませんでした";
+            yield return new WaitForSeconds(1.0f);
+            NextPointOut();
+        }
+    }
+
+    private void SetAccusationButtonsActive(bool active)
+    {
+        if (accuseOther1Button != null) accuseOther1Button.gameObject.SetActive(active);
+        if (accuseOther2Button != null) accuseOther2Button.gameObject.SetActive(active);
+        if (skipAccuseButton != null) skipAccuseButton.gameObject.SetActive(active);
     }
 
     public Player GetCurrentPlayer()
@@ -180,27 +260,34 @@ public class PointOut : MonoBehaviour
         }
         return null;
     }
-
     public void NextPointOut()
     {
         if (accusationPanel != null)
         {
             accusationPanel.SetActive(false);
         }
-        
+
         if (gameManager.currentTurn < gameManager.players.Length - 1)
         {
-            //次の人の指摘
+            // 次の人の指摘へ（まだ全員の指摘が終わっていないのでカード履歴は保持）
             gameManager.currentTurn = (gameManager.currentTurn + 1) % gameManager.players.Length;
             ShowPanel();
         }
         else
         {
+            // ★ 全員の指摘フェーズが終わったタイミングで、全員の「直前使用カード記録」をリセット
+            for (int i = 0; i < gameManager.players.Length; i++)
+            {
+                if (gameManager.players[i] != null)
+                {
+                    gameManager.players[i].ResetLastUsedCard();
+                }
+            }
+
             goal.GoalJudge();
             if (gameManager.currentPhase != TurnPhase.Goal)
             {
                 gameManager.currentTurn = (gameManager.currentTurn + 1) % gameManager.players.Length;
-                //最後の人の指摘が終わったら盤面に戻る
                 playerChange.ShowPlyaerChange();
             }
         }

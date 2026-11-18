@@ -88,7 +88,7 @@ public class Dice : MonoBehaviour
                                 (currentPlayer.afflictedByNerveRounds > 0 && currentPlayer.revealAllInfoRounds == 0);
 
         // 出目改竄(1番)の代償 または 神経妨害被害中：自分の出目が「?」になって見えない
-        bool isDiceHidden = currentPlayer.IsInfoHidden(currentPlayer.hideOwnDicePermanent);
+        bool isDiceHidden = currentPlayer.IsInfoHidden(currentPlayer.hideOwnDicePermanent) || currentPlayer.isCpu;
 
         int dice1 = 1;
         int dice2 = 1;
@@ -215,5 +215,14 @@ public class Dice : MonoBehaviour
         return 9;                                                  // 0は「?」（またはシートに0画像を追加したらその番号）
     }
 
+    public void OnClickRollDiceButton()
+    {
+        Player currentPlayer = gameManager != null ? gameManager.GetCurrentPlayer() : null;
+        if (currentPlayer != null && currentPlayer.isCpu)
+        {
+            return; // CPUのターン中は人間のボタンクリックを無視
+        }
+        RollDice();
+    }
     
 }

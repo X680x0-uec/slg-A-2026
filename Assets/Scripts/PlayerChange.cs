@@ -25,8 +25,19 @@ public class PlayerChange : MonoBehaviour
         gameManager.currentPhase = TurnPhase.PlayerChange;
         Dice dice = FindAnyObjectByType<Dice>();
         if (dice != null) dice.RefreshDiceResult();
-        //表示する
-        playerChangePanel.SetActive(true);
+
+        // 次のプレイヤーが CPU なら「準備OK」画面を出さずにそのままターン開始！
+        Player nextPlayer = gameManager.GetCurrentPlayer();
+        if (nextPlayer != null && nextPlayer.isCpu)
+        {
+            Debug.Log($"[CPU] {nextPlayer.name} のため交代画面を自動スキップします");
+            OnReadyButton();
+            return;
+        }
+
+        // 人間プレイヤーの場合のみ表示する
+        if (playerChangePanel != null) playerChangePanel.SetActive(true);
+
 
         // 誰のターンかを表示
         if (WhoText != null)
@@ -37,11 +48,11 @@ public class PlayerChange : MonoBehaviour
     }
 
     //準備OKが押されたとき
-    private void OnReadyButton()
+    public void OnReadyButton()
     {
         Debug.Log("準備OK");
         gameManager.currentPhase = TurnPhase.WaitingForDice;
-        playerChangePanel.SetActive(false);
+        if (playerChangePanel != null) playerChangePanel.SetActive(false);
 
         gameManager.StartTurn();
     }

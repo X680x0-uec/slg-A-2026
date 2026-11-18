@@ -38,7 +38,7 @@ public class DiceUI : MonoBehaviour
             Player p = gameManager.GetCurrentPlayer();
             if (p != null)
             {
-                isHidden = p.IsInfoHidden(p.hideOwnDicePermanent);
+                isHidden = p.IsInfoHidden(p.hideOwnDicePermanent) || p.isCpu;
                 currentDiceType = p.NextDiceType; // 現在のプレイヤーのダイス種類に自動同期
             }
         }

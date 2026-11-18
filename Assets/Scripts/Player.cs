@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     public bool forceCheatingNextTurn = false; // イカサマ強制マス用
 
     [SerializeField] private float moveSpeed = 8f; // ★ なめらかな移動速度（お好みで調整）
+    public bool isCpu = false; // CPU（仮）
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
