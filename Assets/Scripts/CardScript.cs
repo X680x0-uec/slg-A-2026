@@ -94,51 +94,29 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 currentPlayer.isGridEffectNullified = true;
                 Debug.Log("マス効果無効をセット");
                 break;
-            // 5~10 イカサマカード効果
+            // 5~ イカサマカード効果
             case 5: // イカサマ1番：出目改竄
-                // 今の手札を画面から消す
-                foreach (GameObject card in cardManager.destroyList)
-                {
-                    if (card != null) Destroy(card);
-                }
-                cardManager.destroyList.Clear();
-
-                // 出目改竄パネルを開く
-                gameManager.OpenDiceFalsifyUI();
-                return; // ここで必ず return する！（下の ExecutePlayerMove() を走らせない）
+                break;
             
             case 6: // イカサマ2番：強行突破
                 currentPlayer.diceModifier += 15;
                 currentPlayer.hideRemainGridPermanent = true;
-                currentPlayer.restrictDice1To2Rounds = 3;
+                currentPlayer.restrictDice1To2Rounds = 2;
                 if (dice != null) dice.AppendEffectText(+15);
                 Debug.Log("【イカサマ2】強行突破：+15マス移動（代償：ゴール残りマス不可視＆2Rダイス1〜2制限）");
                 break;
 
             case 7: // イカサマ3番：現実拒否
-                foreach (GameObject card in cardManager.destroyList)
-                {
-                    if (card != null) Destroy(card);
-                }
-                cardManager.destroyList.Clear();
-
-                // パネルを開く
-                gameManager.OpenRealityDenialUI();
-                return;
+                break;
             
             case 8: // イカサマ4番：全体妨害
-                int maxGoal = 49;
                 foreach (Player p in allPlayers)
                 {
                     if (p != currentPlayer)
                     {
                         p.goalIndex = Mathf.Min(90, p.goalIndex + 10);
                     }
-                    if (p.goalIndex > maxGoal) maxGoal = p.goalIndex;
                 }
-                BoardManager bm = FindAnyObjectByType<BoardManager>();
-                if (bm != null) bm.RevealGridsUpTo(maxGoal);
-
                 currentPlayer.hideRankPermanent = true;
                 Debug.Log("【イカサマ4】全体妨害：他全員のゴール+10（代償：順位不可視）");
                 break;
@@ -159,7 +137,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
 
             
             case 10: // イカサマ6番：出目偽装
-                currentPlayer.disguiseMoveRounds = 3;
+                currentPlayer.disguiseMoveRounds = 2;
                 currentPlayer.hideOtherLastMovePermanent = true;
                 Debug.Log("【イカサマ6】出目偽装：2R間移動数偽装(2〜12)（代償：他人の前R移動数不可視）");
                 break;
@@ -181,6 +159,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         //ここでyield return StartCoroutine(gameManager.ExecutePlayerMove());したいけどバグる。後回し
         //これができたら移動中にサイコロ振れるバグ直せると思う
         gameManager.ExecutePlayerMove(); // カード効果適用後、プレイヤーの行動（移動 or 移動停止）を実行
+        gameManager.currentPhase = TurnPhase.WaitingForDice;    //サイコロ振れるようにする
     }
 
     //public void OnPointerUp(PointerEventData eventData)

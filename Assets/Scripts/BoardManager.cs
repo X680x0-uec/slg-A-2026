@@ -7,7 +7,7 @@ public enum GridEffect //マス目の種類の一覧(効果)
     Normal,
     Advance,　// 進む
     Back, // 戻る
-    GetCard, // カード獲得（手札が四枚に）
+    GetCard, // 通常・疑惑カード獲得
     ChangeDiceroll, // 出目変化マス
     RetuenCheatingCard, // イカサマカード復活
     ForcedCheating // イカサマ強制マス
@@ -28,7 +28,7 @@ public class BoardManager : MonoBehaviour
     public GameObject gridPrefab; //AssetsのGridSquareを雛型とする
 
     [Header("盤面生成")]
-    [SerializeField] private int totalGridCount = 91; // 生成したいマスの合計数
+    [SerializeField] private int totalGridCount = 50; // 生成したいマスの合計数
     [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
     [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
 
@@ -40,8 +40,6 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private int getCardCount = 3; // GetCard の出現数
     [SerializeField] private int minEffectValue = 3;     // + / - マスの最小歩数
     [SerializeField] private int maxEffectValue = 3;     // + / - マスの最大歩数
-    [SerializeField] private int returnCheatingcardCount = 2; // イカサマ復活マス
-    [SerializeField] private int forcedCheatingCount = 3; // イカサマ強制マス
 
     [Header("特殊マスの個別設定（手動設定用）")]
     [SerializeField] private SpecialGrid[] specialGrids; // 効果を変えたいマスだけここに入力
@@ -49,7 +47,6 @@ public class BoardManager : MonoBehaviour
     private Transform[] generatedWaypoints; //Transform型(座標や向きなどを指定する型)を格納する配列を宣言
     private GridEffect[] generatedGridEffects; // 生成されたマスの効果を保持
     private int[] generatedGridValues; // 各マスの効果数値を保持
-    private GameObject[] generatedGridObjects; // 生成したマスのGameObjectを保持
 
     void Awake()
     {
@@ -63,7 +60,6 @@ public class BoardManager : MonoBehaviour
         generatedWaypoints = new Transform[totalGridCount]; //Transform型をマスの数だけ格納可能な配列を作る
         generatedGridEffects = new GridEffect[totalGridCount];
         generatedGridValues = new int[totalGridCount];
-        generatedGridObjects = new GameObject[totalGridCount];
 
         for (int i = 0; i < totalGridCount; i++)    //  全マスをデフォルトの Normal で初期化
         {
@@ -97,11 +93,6 @@ public class BoardManager : MonoBehaviour
             GameObject newGrid = Instantiate(gridPrefab, pos, Quaternion.identity); //gridPrefabオブジェクトのクローンをposの位置にそのままの向きで作る
             newGrid.name = $"Grid_{i} ({currentEffect})";
             newGrid.transform.SetParent(this.transform); //生成したマスをBoardManagerの子オブジェクトにする
-            generatedGridObjects[i] = newGrid;
-            if (i >= 50)
-            {
-                newGrid.SetActive(false);
-            }
 
             Renderer rend = newGrid.GetComponent<Renderer>();
             if (rend != null) 
@@ -110,8 +101,6 @@ public class BoardManager : MonoBehaviour
                 if (currentEffect == GridEffect.Back) rend.material.color = Color.red;
                 if (currentEffect == GridEffect.ChangeDiceroll) rend.material.color = Color.blue;
                 if (currentEffect == GridEffect.GetCard) rend.material.color = Color.yellow;
-                if (currentEffect == GridEffect.RetuenCheatingCard) rend.material.color = Color.pink;
-                if (currentEffect == GridEffect.ForcedCheating) rend.material.color = Color.purple;
                 if (i == 0 || i == totalGridCount - 1) newGrid.transform.localScale = new Vector3(2.2f, 2.2f, 0.1f);
             }
 
@@ -130,8 +119,6 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < backCount; i++) effectPool.Add(GridEffect.Back);
         for (int i = 0; i < changeDiceRollCount; i++) effectPool.Add(GridEffect.ChangeDiceroll);
         for (int i = 0; i < getCardCount; i++) effectPool.Add(GridEffect.GetCard);
-        for (int i = 0; i < returnCheatingcardCount; i++) effectPool.Add(GridEffect.RetuenCheatingCard);
-        for (int i = 0; i < forcedCheatingCount; i++) effectPool.Add(GridEffect.ForcedCheating);
 
         while (effectPool.Count < playableSquares)
         {
@@ -216,46 +203,4 @@ public class BoardManager : MonoBehaviour
         return generatedGridValues[index];
     }
 
-    // 全体妨害などでゴールが伸びたとき、新しいゴール位置までのマスを盤面に表示する
-        public void RevealGridsUpTo(int maxGoalIndex)
-    {
-        if (generatedGridObjects == null) return;
-        int limit = Mathf.Min(maxGoalIndex, generatedGridObjects.Length - 1);
-
-        for (int i = 0; i < generatedGridObjects.Length; i++)
-        {
-            if (generatedGridObjects[i] != null)
-            {
-                // 0 〜 limit までは表示し、それより先のマスは非表示にする
-                generatedGridObjects[i].SetActive(i <= limit);
-            }
-        }
-    }
-
-    // 【イカサマ3：現実拒否用】指定マスの効果を強制的に書き換える
-    public void OverrideGridEffect(int index, GridEffect newEffect, int newValue)
-    {
-        if (generatedGridEffects == null || index < 0 || index >= generatedGridEffects.Length) return;
-        generatedGridEffects[index] = newEffect;
-        generatedGridValues[index] = newValue;
-
-        if (generatedGridObjects != null && generatedGridObjects[index] != null)
-        {
-            generatedGridObjects[index].name = $"Grid_{index} ({newEffect})";
-            Renderer rend = generatedGridObjects[index].GetComponent<Renderer>();
-            if (rend != null)
-            {
-                switch (newEffect)
-                {
-                    case GridEffect.Advance:        rend.material.color = Color.green; break;
-                    case GridEffect.Back:           rend.material.color = Color.red; break;
-                    case GridEffect.ChangeDiceroll: rend.material.color = Color.blue; break;
-                    case GridEffect.GetCard:        rend.material.color = Color.yellow; break;
-                    case GridEffect.RetuenCheatingCard: rend.material.color = Color.pink; break;
-                    case GridEffect.ForcedCheating: rend.material.color = Color.purple; break;
-                }
-            }
-        }
-    }
-   
 }
