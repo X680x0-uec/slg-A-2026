@@ -41,6 +41,9 @@ public class PointOut : MonoBehaviour
     {
         gameManager.currentPhase = TurnPhase.AccusationPhase;
 
+        Dice dice = FindAnyObjectByType<Dice>();
+        if (dice != null) dice.RefreshDiceResult();
+
         // 指摘パネルを開くとき、画面にカードが残っていたらすべて消す
         CardManager cm = FindAnyObjectByType<CardManager>();
         if (cm != null)
@@ -57,7 +60,7 @@ public class PointOut : MonoBehaviour
 
         gameManager.UpdateRemainingGridUI();
 
-Player currentPlayer = GetCurrentPlayer();
+        Player currentPlayer = GetCurrentPlayer();
         bool isMoveHidden = currentPlayer != null && currentPlayer.IsInfoHidden(currentPlayer.hideOtherLastMovePermanent);
 
         // 自分以外の2人をリストアップ

@@ -186,23 +186,23 @@ public class Dice : MonoBehaviour
         }
     }
 
+    // ターン開始・交代時に前のプレイヤーの出目を隠す
     public void RefreshDiceResult()
     {
-        if (diceText != null) diceText.text = "→";
-        if (diceUIImages != null && diceUIImages.Length >= 2 && diceSprites != null && diceSprites.Length >= 10)
+        isDiceRolling = false;
+
+        if (diceText != null)
         {
-            if (gameManager != null)
-            {
-                Player p = gameManager.GetCurrentPlayer();
-                if (p != null && p.IsInfoHidden(p.hideOwnDicePermanent))
-                {
-                    diceUIImages[0].sprite = diceSprites[9]; // 代償中は最初から「?」
-                    diceUIImages[1].sprite = diceSprites[9];
-                    return;
-                }
-            }
-            diceUIImages[0].sprite = diceSprites[0];
-            diceUIImages[1].sprite = diceSprites[5];
+            diceText.text = "→";
+        }
+
+        if (diceUIImages != null && diceUIImages.Length >= 2 && diceSprites != null && diceSprites.Length > 0)
+        {
+            int qIndex = Mathf.Min(9, diceSprites.Length - 1); // 「?」のスプライト
+            diceUIImages[0].enabled = true;
+            diceUIImages[1].enabled = true;
+            diceUIImages[0].sprite = diceSprites[qIndex];
+            diceUIImages[1].sprite = diceSprites[qIndex];
         }
     }
 
@@ -214,4 +214,6 @@ public class Dice : MonoBehaviour
         if (rollValue == -1) return 8;                             // -1→8
         return 9;                                                  // 0は「?」（またはシートに0画像を追加したらその番号）
     }
+
+    
 }

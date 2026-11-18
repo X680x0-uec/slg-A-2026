@@ -23,7 +23,8 @@ public class PlayerChange : MonoBehaviour
     public void ShowPlyaerChange()
     {
         gameManager.currentPhase = TurnPhase.PlayerChange;
-
+        Dice dice = FindAnyObjectByType<Dice>();
+        if (dice != null) dice.RefreshDiceResult();
         //表示する
         playerChangePanel.SetActive(true);
 

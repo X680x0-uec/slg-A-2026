@@ -67,6 +67,8 @@ public class GameManager : MonoBehaviour
         }
 
         //pointOut.ShowPanel(); //デバッグ用
+        Dice dice = FindAnyObjectByType<Dice>();
+        if (dice != null) dice.RefreshDiceResult();
     }
 
     public void OnDiceRolled(int diceValue)
