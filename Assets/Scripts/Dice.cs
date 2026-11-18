@@ -122,8 +122,15 @@ public class Dice : MonoBehaviour
                 diceUIImages[1].sprite = diceSprites[dice2 - 1];
             }
             
-            gameManager.OnDiceRolled(totalValue);
-            cardScript.saveDiceValue(totalValue);
+            gameManager.OnDiceRolled(totalValue);   //出目を表示
+            cardScript.saveDiceValue(totalValue);  //出目をCardScriptに保存
+
+
+            //指摘失敗の−４をテキストに反映
+            if (currentPlayer.diceModifier != 0)
+            {
+                AppendEffectText(currentPlayer.diceModifier);
+            }
         }
         else if (currentPlayer.NextDiceType == DiceType.Special)
         {

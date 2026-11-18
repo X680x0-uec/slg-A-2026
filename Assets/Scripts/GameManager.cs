@@ -1,7 +1,19 @@
 using UnityEngine;
+using UnityEngine.UI; // ボタン制御のために追加
 using TMPro;
-using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+
+// ターンの進行状態
+public enum TurnPhase
+{
+    AccusationPhase,    // 指摘するかどうか選ぶフェーズ（サイコロ前）
+    WaitingForDice,     // サイコロ待ち
+    WaitingForCard,     // カード選択待ち
+    Moving,             // コマ移動・マス効果処理中
+    PlayerChange,       // プレイヤーを入れ替えるフェーズ
+    Goal,               // ゴール演出
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -11,36 +23,74 @@ public class GameManager : MonoBehaviour
     [Header("プレイヤー専用カメラ（パターンB）")]
     [SerializeField] private Camera[] playerCameras; // ★ Camera_P1, Camera_P2, Camera_P3 を登録
 
-    [SerializeField] private int currentTurn = 0; // 誰のターンか
-    [SerializeField] private bool isWaitingForDice = true;
-    public bool IsWaitingForDice => isWaitingForDice; // ダイス側から「今振れる状態か？」を確認できるようにプロパティを追加
+    [SerializeField] public int currentTurn = 0; // 誰のターンか
+    [SerializeField] public TurnPhase currentPhase = TurnPhase.WaitingForDice;
+    public bool IsWaitingForDice => currentPhase == TurnPhase.WaitingForDice; // Dice.cs 用
+    public bool CanUseCard => currentPhase == TurnPhase.WaitingForCard;  //CardScript.cs用
 
     
     [Header("参照")]
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
     [SerializeField] private TextMeshProUGUI remainingGridText; // 残りマス数表示用テキスト
     [SerializeField] private TextMeshProUGUI otherRemainingGridText;
+    [SerializeField] private PointOut pointOut;         //PointOut.csにアクセス
+    [SerializeField] private PlayerChange playerChange; //PlayerChange.csにアクセス
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
     void Start()
     {
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
-        UpdateActiveCamera(); // ゲーム開始時のカメラ設定
+        //pointOut.EnterDicePhase();
+        StartTurn();
+    }
+
+    // ターン開始時の共通処理
+    public void StartTurn()
+    {
+        if (currentPhase != TurnPhase.WaitingForDice) return;
+
+        // 新しくターンが来たプレイヤーの「1周前のカード使用記録」をリセット
+        Player currentPlayer = GetCurrentPlayer();
+        if (currentPlayer != null)
+        {
+            currentPlayer.ResetLastUsedCard();
+        }
+
+        UpdateActiveCamera();
         UpdateRemainingGridUI();
-        cardManager.DrawHandForCurrentPlayer();             //カードを配る
+
+        if (cardManager != null)
+        {
+            cardManager.UpdateCardVisibility();
+            cardManager.DrawHandForCurrentPlayer();
+        }
+
+        //pointOut.ShowPanel(); //デバッグ用
     }
 
     public void OnDiceRolled(int diceValue)
     {
-        if (!isWaitingForDice) return; // サイコロを振ってはいけない状態のときコードを止める
+        if (currentPhase != TurnPhase.WaitingForDice) return;
 
-        isWaitingForDice = false; // 二重に振られないようにロック
+        currentPhase = TurnPhase.WaitingForCard; // 次はカード選択待ち
         Debug.Log($"プレイヤー {currentTurn + 1} が {diceValue}を出した");
+    }
 
-        //サイコロ振ったらじゃなくてカードを押したら動いてほしい
-        //players[currentTurn].Move(diceValue);
+    public void ExecutePlayerMove()
+    {
+        if (currentPhase != TurnPhase.WaitingForCard) return;
 
+        currentPhase = TurnPhase.Moving; // 移動中ロック
+        Player currentPlayer = GetCurrentPlayer();
+
+        if (currentPlayer.isStayAction)
+        {
+            currentPlayer.StayAndTriggerEffect();
+            return;
+        }
+        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
+        currentPlayer.Move(finalSteps);
     }
     private int turnStartLocation = 0; // 移動前の位置を記録（ExecutePlayerMoveでセット）
     public void OnPlayerMoveComplete()
@@ -63,32 +113,27 @@ public class GameManager : MonoBehaviour
 
         UpdateRemainingGridUI();
         
-        // プレイヤー数（3人）に合わせて 0 -> 1 -> 2 -> 0 と自動ループ
+        // プレイヤー数3人に合わせて 0 → 1 → 2 → 0 と自動ループ
         currentTurn = (currentTurn + 1) % players.Length;
-
-        UpdateActiveCamera(); // ターン交代時にカメラ切り替え
-
-        if (boardManager != null)
-        {
-            boardManager.RevealGridsUpTo(players[currentTurn].goalIndex);
-        }
-        if (cardManager != null)
-        {
-            cardManager.UpdateCardVisibility();
-        }
-
         Debug.Log($"次は プレイヤー {currentTurn + 1}のターン。");
-        isWaitingForDice = true;
-        UpdateRemainingGridUI();
-        cardManager.DrawHandForCurrentPlayer();             //カードを配る
-    }
 
-    /// <summary>
-    /// 現在ターンのプレイヤー専用カメラだけを有効化（AudioListenerエラー対策含む）
-    /// </summary>
+        //指摘フェーズ
+        if (currentTurn == 0)
+        {
+            Debug.Log("指摘フェーズ");
+            pointOut.ShowPanel();
+        }
+        //プレイヤー交代フェーズ
+        else
+        {
+            playerChange.ShowPlyaerChange();
+        }
+
+        StartTurn();
+    }
+    
     private void UpdateActiveCamera()
     {
-        Debug.Log(playerCameras.Length);
         if (playerCameras == null || playerCameras.Length == 0) return;
         
         for (int i = 0; i < playerCameras.Length; i++)
@@ -98,7 +143,6 @@ public class GameManager : MonoBehaviour
                 bool isActive = (i == currentTurn);
                 playerCameras[i].enabled = isActive;
 
-                // AudioListenerの重複警告を防止
                 AudioListener listener = playerCameras[i].GetComponent<AudioListener>();
                 if (listener != null)
                 {
@@ -122,7 +166,11 @@ public class GameManager : MonoBehaviour
 
         if (otherRemainingGridText != null)
         {
-            // 全体妨害(4番)代償の他プレイヤー残りマス/順位文字化け判定
+     
+            // 指摘フェーズのときだけ、他プレイヤー全員の残りマス数を表示する
+            if (currentPhase == TurnPhase.AccusationPhase)
+            {
+            　// 全体妨害(4番)代償の他プレイヤー残りマス/順位文字化け判定
             bool isOtherHidden = currentPlayer.IsInfoHidden(currentPlayer.hideRankPermanent);
             string otherDisplay = "";
             for (int i = 0; i < players.Length; i++)
@@ -135,6 +183,12 @@ public class GameManager : MonoBehaviour
             }
             otherRemainingGridText.text = otherDisplay;
         }
+        else
+            {
+                // サイコロのターンなど、指摘フェーズ以外は非表示（空）にする
+                otherRemainingGridText.text = "";
+            }
+    }
     }
 
     public Player GetCurrentPlayer()
@@ -144,21 +198,6 @@ public class GameManager : MonoBehaviour
             return players[currentTurn];
         }
         return null;
-    }
-    public void ExecutePlayerMove()
-    {
-        if (isWaitingForDice) return;
-
-        Player currentPlayer = GetCurrentPlayer();
-
-        if (currentPlayer.isStayAction) // もし通常カード③「移動停止」が使われていた場合、止まっていたマス効果を発動
-        {
-            currentPlayer.StayAndTriggerEffect();
-            return;
-        }
-
-        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
-        currentPlayer.Move(finalSteps);
     }
 
     [Header("イカサマ選択UIパネル（1番：出目改竄 / 3番：現実拒否）")]
