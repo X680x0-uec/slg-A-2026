@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class PlayerChange : MonoBehaviour
 {
     [SerializeField] public GameManager gameManager;
-
+    [SerializeField] private Dice diceManager;
+    [SerializeField] private DiceUI diceUI;
     [SerializeField] private GameObject playerChangePanel;
     [SerializeField] private TMP_Text WhoText;      // 誰のターンかを表示
     [SerializeField] private Button ReadyButton;    // 準備OKのボタン
@@ -41,6 +42,8 @@ public class PlayerChange : MonoBehaviour
         Debug.Log("準備OK");
         gameManager.currentPhase = TurnPhase.WaitingForDice;
         playerChangePanel.SetActive(false);
+        diceUI.diceImage.sprite = diceUI.diceSprites[0];
+        diceManager.diceText.text = "→";
 
         gameManager.StartTurn();
     }

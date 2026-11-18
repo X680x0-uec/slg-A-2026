@@ -7,7 +7,7 @@ public class Dice : MonoBehaviour
 {
     private GameManager gameManager;    // GameManagerオブジェクトを記憶
     [SerializeField] private CardScript cardScript;      // 出目をCardScriptに保存
-    [SerializeField] private TextMeshProUGUI diceText;
+    [SerializeField] public TextMeshProUGUI diceText;
     [SerializeField] private GameObject diceUiPar;
     [SerializeField] private Sprite[] diceSprites; //サイコロの出目の画像を格納
     private GameObject[] diceUIs; //サイコロのオブジェクト

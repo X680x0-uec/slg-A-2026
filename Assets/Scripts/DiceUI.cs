@@ -5,17 +5,18 @@ using UnityEngine.UI;
 
 public class DiceUI : MonoBehaviour
 {
-    [SerializeField] public Dice diceManager;
+    [SerializeField] private Dice diceManager;
     
-    [SerializeField] private Sprite[] diceSprites;
-    private UnityEngine.UI.Image diceImage;
+    [SerializeField] public Sprite[] diceSprites;
+    public UnityEngine.UI.Image diceImage;
 
     private int diceAnimeFlame;
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         diceImage = GetComponent<UnityEngine.UI.Image>();
+        //diceImage.sprite = diceSprites[0];
     }
 
     // Update is called once per frame
