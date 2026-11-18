@@ -204,6 +204,7 @@ public class Player : MonoBehaviour
     // 【通常カード3：移動停止】移動せず現在地のマス効果だけ発動する
     public void StayAndTriggerEffect()
     {
+        isStayAction = false;
         turnStartLocation = playerCurrentLocation; // 移動停止時も開始位置を記録
         Debug.Log("【移動停止】現在地に留まった場合、その現在地のマス効果を発動する");
         StartCoroutine(ApplyGridEffectRoutine());
@@ -236,6 +237,7 @@ public class Player : MonoBehaviour
         diceModifier = 0;
         isStayAction = false;
         isGridEffectNullified = false;
+        hasForcedGridEffect = false;
     }
 
     // =========================================================
