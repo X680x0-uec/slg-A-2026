@@ -57,21 +57,70 @@ public class Dice : MonoBehaviour
             return;
         }
 
-        int totalValue;
+        int totalValue = 0;
 
-        if (currentPlayer.NextDiceType == DiceType.Normal)
+        // 神経妨害(5番)の代償：次のラウンドはダイスを振れず出目0（カード効果だけで移動可能）
+        if (currentPlayer.skipDiceNextRound)
         {
-            int dice1 = Random.Range(1,7); //サイコロの出目を発生
-            int dice2 = Random.Range(1,7);
+            currentPlayer.skipDiceNextRound = false;
+            totalValue = 0;
+            Debug.Log("【神経妨害の代償】サイコロを振れず、出目合計は 0 です（カードで移動可能）");
+
+            if (diceText != null)
+            {
+                diceText.text = "→ 0";
+            }
+
+            gameManager.OnDiceRolled(totalValue);
+            cardScript.saveDiceValue(totalValue);
+            return;
+        }
+
+        // 強行突破(2番)の代償 または 神経妨害被害中（ただし自分の閲覧バフ中を除く）：サイコロが 1〜2 に制限
+        bool isRestricted1To2 = (currentPlayer.restrictDice1To2Rounds > 0) ||
+                                (currentPlayer.afflictedByNerveRounds > 0 && currentPlayer.revealAllInfoRounds == 0);
+
+        // 出目改竄(1番)の代償 または 神経妨害被害中：自分の出目が文字化けして見えない
+        bool isDiceHidden = currentPlayer.IsInfoHidden(currentPlayer.hideOwnDicePermanent);
+
+        // ★ 文字化け中はサイコロの絵（2個）も隠して数字がバレないようにする
+        if (diceUIImages != null && diceUIImages.Length >= 2)
+        {
+            diceUIImages[0].enabled = !isDiceHidden;
+            diceUIImages[1].enabled = !isDiceHidden;
+        }
+
+        if (isRestricted1To2)
+        {
+            int dice1 = Random.Range(1, 3); // 1 または 2
+            int dice2 = Random.Range(1, 3); // 1 または 2
+            totalValue = dice1 + dice2;
+
+            Debug.Log($"制限ダイス(1〜2): {dice1} + {dice2} = {totalValue}");
+            if (diceText != null)
+            {
+                diceText.text = isDiceHidden ? "→ ■?#@!" : $"→ {totalValue}";
+                diceUIImages[0].sprite = diceSprites[dice1 - 1];
+                diceUIImages[1].sprite = diceSprites[dice2 - 1];
+            }
+
+            gameManager.OnDiceRolled(totalValue);
+            cardScript.saveDiceValue(totalValue);
+            if (currentPlayer.NextDiceType == DiceType.Special) currentPlayer.NextDiceType = DiceType.Normal;
+        }
+        else if (currentPlayer.NextDiceType == DiceType.Normal)
+        {
+            int dice1 = Random.Range(1, 7);
+            int dice2 = Random.Range(1, 7);
             totalValue = dice1 + dice2;
 
             Debug.Log($"通常ダイス: {dice1} + {dice2} = {totalValue}");
-            if (diceText != null) //出目の表示を変更
+            if (diceText != null)
             {
-                diceText.text = $"→ {totalValue}";
+                diceText.text = isDiceHidden ? "→ ■?#@!" : $"→ {totalValue}";
                 diceUIImages[0].sprite = diceSprites[dice1 - 1];
                 diceUIImages[1].sprite = diceSprites[dice2 - 1];
-            } 
+            }
             
             gameManager.OnDiceRolled(totalValue);   //出目を表示
             cardScript.saveDiceValue(totalValue);  //出目をCardScriptに保存
@@ -85,23 +134,34 @@ public class Dice : MonoBehaviour
         }
         else if (currentPlayer.NextDiceType == DiceType.Special)
         {
-            int dice1 = Random.Range(-1,9);
-            int dice2 = Random.Range(-1,9);
+            int dice1 = Random.Range(-1, 9);
+            int dice2 = Random.Range(-1, 9);
             totalValue = dice1 + dice2;
 
             Debug.Log($"特殊ダイス: {dice1} + {dice2} = {totalValue}");
             if (diceText != null) 
             {
-                diceText.text = $"DICE: {dice1} + {dice2} = {totalValue}";
+                diceText.text = isDiceHidden ? "DICE: ■?#@!" : $"DICE: {dice1} + {dice2} = {totalValue}";
             } 
             gameManager.OnDiceRolled(totalValue);
             cardScript.saveDiceValue(totalValue);
-            currentPlayer.NextDiceType = DiceType.Normal; // 通常に戻す
-        }
+            currentPlayer.NextDiceType = DiceType.Normal;
+        }     
     }
     public void AppendEffectText(int effectValue) // マス効果の演出用にテキストを追記するメソッド
     {
         if (diceText == null) return;
+
+        // 出目が文字化け中のプレイヤーなら、カード補正値も隠したままにする
+        if (gameManager != null)
+        {
+            Player p = gameManager.GetCurrentPlayer();
+            if (p != null && p.IsInfoHidden(p.hideOwnDicePermanent))
+            {
+                diceText.text = "→ ■?#@!";
+                return;
+            }
+        }
 
         if (effectValue > 0)
         {
