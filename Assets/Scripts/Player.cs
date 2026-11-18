@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     public DiceType NextDiceType { get; set; } = DiceType.Normal; // 次に振るダイスの種類(通常はNormal)
     private List<GameObject> myCards = new List<GameObject>();  // プレイヤー個別の手札リスト
     public List<GameObject> MyCards => myCards;
+    public int extraCardCount = 0; // カード獲得マス等で増えた追加手札枚数
+    public bool forceCheatingNextTurn = false; // イカサマ強制マス用
 
     [SerializeField] private float moveSpeed = 8f; // ★ なめらかな移動速度（お好みで調整）
 
@@ -53,8 +55,8 @@ public class Player : MonoBehaviour
         // 出目の数だけ1マスずつ進む
         for (int i = 0; i < Mathf.Abs(spaces); i++)
         {
-          // ゴール到達またはスタート（0番目）未満にならない安全対策
-            if (stepDir > 0 && playerCurrentLocation >= totalWaypoints - 1) break;
+            // totalWaypoints - 1 ではなく自分の goalIndex でゴール停止判定
+            if (stepDir > 0 && playerCurrentLocation >= goalIndex) break;
             if (stepDir < 0 && playerCurrentLocation <= 0) break;
 
             if (spaces > 0) playerCurrentLocation++;
@@ -74,9 +76,9 @@ public class Player : MonoBehaviour
         }
 
         // 既存のゴール判定・ログ出力
-        if (playerCurrentLocation >= totalWaypoints - 1)
+        if (playerCurrentLocation >= goalIndex)
         {
-            playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマスに固定
+            playerCurrentLocation = goalIndex; // 位置をゴールのマスに固定
             Debug.Log("ゴール！");
             RecordTurnMovedSteps(); //：ゴール時も移動マス数を記録
             gameManager.OnPlayerMoveComplete();
@@ -112,6 +114,17 @@ public class Player : MonoBehaviour
         GridEffect effect = boardManager.GetGridEffect(playerCurrentLocation); // BoardManagerから現在地のマス内容を取得
         int value = boardManager.GetGridEffectValue(playerCurrentLocation); // マス内容の数値を取得
 
+        // イカサマ3番（現実拒否）が使われていたら、止まったマスに関係なく選んだ効果を発動！
+        if (hasForcedGridEffect)
+        {
+            effect = forcedGridEffect;
+            value = forcedGridValue;
+            if (boardManager != null)
+            {
+                boardManager.OverrideGridEffect(playerCurrentLocation, effect, value);
+            }
+        }
+
         switch(effect) // if (○○ == ○○) {} を省略した書き方
         {
             case GridEffect.Advance: // +マス
@@ -140,10 +153,13 @@ public class Player : MonoBehaviour
               Debug.Log("【出目変化マス】次のターンは -1〜8 の10面ダイス×2 に変化！");
               break;
 
-            case GridEffect.RetuenCheatingCard: // イカサマカード復活(未実装)
+            case GridEffect.RetuenCheatingCard: // イカサマカード復活
+              RestoreOneRandomCheatingCard();
               break;
 
-            case GridEffect.ForcedCheating: // イカサマ強制使用(未実装)
+            case GridEffect.ForcedCheating: // イカサマ強制使用
+              Debug.Log("【イカサマ強制マス】次のターンはイカサマカードしか引けなくなる！（強制使用）");
+              forceCheatingNextTurn = true;
               break;
         }
 
@@ -162,6 +178,9 @@ public class Player : MonoBehaviour
     public int diceModifier = 0;               // 1番・2番用：出目補正（-1 や +1）
     public bool isStayAction = false;          // 3番用：移動停止フラグ
     public bool isGridEffectNullified = false; // 5番用：マス効果無効フラグ
+    public bool hasForcedGridEffect = false;   // イカサマ3番(現実拒否)：強制発動予約フラグ
+    public GridEffect forcedGridEffect = GridEffect.Normal;
+    public int forcedGridValue = 0;
 
     // 直前のターンで使用したカードID（未使用時は -1）
     public int lastUsedCardId = -1;
@@ -185,6 +204,7 @@ public class Player : MonoBehaviour
     // 【通常カード3：移動停止】移動せず現在地のマス効果だけ発動する
     public void StayAndTriggerEffect()
     {
+        isStayAction = false;
         turnStartLocation = playerCurrentLocation; // 移動停止時も開始位置を記録
         Debug.Log("【移動停止】現在地に留まった場合、その現在地のマス効果を発動する");
         StartCoroutine(ApplyGridEffectRoutine());
@@ -217,6 +237,7 @@ public class Player : MonoBehaviour
         diceModifier = 0;
         isStayAction = false;
         isGridEffectNullified = false;
+        hasForcedGridEffect = false;
     }
 
     // =========================================================
@@ -230,7 +251,7 @@ public class Player : MonoBehaviour
     public int goalIndex = 49; // 初期値は BoardManager の総マス数 - 1
 
     [Header("代償：（残りラウンド数 / 永続フラグ）")]
-    public int hideOwnDiceRounds = 0;            // 1番代償：自分の出目が文字化け
+    public bool hideOwnDicePermanent = false;    // 1番代償：自分の出目が文字化け
     public bool hideRemainGridPermanent = false; // 2番代償：自分の残りマス数が文字化け
     public int restrictDice1To2Rounds = 0;       // 2番代償：ダイスが1〜2に制限される
     public bool hideGridDetailPermanent = false; // 3番代償：マス効果の詳細（数値など）が文字化け
@@ -301,7 +322,6 @@ public class Player : MonoBehaviour
     /// </summary>
     public void TickPenaltyRounds()
     {
-        if (hideOwnDiceRounds > 0) hideOwnDiceRounds--;
         if (restrictDice1To2Rounds > 0) restrictDice1To2Rounds--;
         if (disguiseMoveRounds > 0) disguiseMoveRounds--;
         if (revealAllInfoRounds > 0) revealAllInfoRounds--;
