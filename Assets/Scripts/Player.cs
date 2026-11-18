@@ -80,13 +80,15 @@ public class Player : MonoBehaviour
             yield break;
         }
 
-        Debug.Log($"{gameObject.name}が移動完了（現在地: {playerCurrentLocation}）");
-
         // ダイスによる通常移動の場合のみ、止まったマスの効果を発動
         if (triggerEffectOnComplete)
         {
             yield return StartCoroutine(ApplyGridEffectRoutine());
         }
+
+        Debug.Log($"{gameObject.name}が移動完了（現在地: {playerCurrentLocation}）");
+
+        //gameManager.currentPhase = TurnPhase.WaitingForDice;    //サイコロ振れるようにする
     }
 
     // =========================================================

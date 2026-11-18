@@ -154,9 +154,12 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
                 Destroy(card);    //カードを削除
             }
         }
+
         cardManager.destroyList.Clear();
+        //ここでyield return StartCoroutine(gameManager.ExecutePlayerMove());したいけどバグる。後回し
+        //これができたら移動中にサイコロ振れるバグ直せると思う
         gameManager.ExecutePlayerMove(); // カード効果適用後、プレイヤーの行動（移動 or 移動停止）を実行
-        gameManager.currentPhase = TurnPhase.WaitingForDice;    //サイコロを振れるようにする
+        gameManager.currentPhase = TurnPhase.WaitingForDice;    //サイコロ振れるようにする
     }
 
     //public void OnPointerUp(PointerEventData eventData)

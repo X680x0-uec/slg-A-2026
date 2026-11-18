@@ -7,10 +7,11 @@ using System.Collections.Generic;
 // ターンの進行状態
 public enum TurnPhase
 {
-    AccusationPhase, // 指摘するかどうか選ぶフェーズ（サイコロ前）
-    WaitingForDice,  // サイコロ待ち
-    WaitingForCard,  // カード選択待ち
-    Moving           // コマ移動・マス効果処理中
+    AccusationPhase,    // 指摘するかどうか選ぶフェーズ（サイコロ前）
+    WaitingForDice,     // サイコロ待ち
+    WaitingForCard,     // カード選択待ち
+    Moving,             // コマ移動・マス効果処理中
+    PlayerChange,       // プレイヤーを入れ替えるフェーズ
 }
 
 public class GameManager : MonoBehaviour
@@ -31,7 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardManager boardManager; // BoardManagerから取得
     [SerializeField] private TextMeshProUGUI remainingGridText; // 残りマス数表示用テキスト
     [SerializeField] private TextMeshProUGUI otherRemainingGridText;
-    [SerializeField] private PointOut pointOut;     //PointOut.csにアクセス
+    [SerializeField] private PointOut pointOut;         //PointOut.csにアクセス
+    [SerializeField] private PlayerChange playerChange; //PlayerChange.csにアクセス
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
@@ -114,7 +116,8 @@ public class GameManager : MonoBehaviour
         {
             currentPlayer.StayAndTriggerEffect();
             return;
-        }int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
+        }
+        int finalSteps = CardScript.DiceValue + currentPlayer.diceModifier;
         currentPlayer.Move(finalSteps);
     }
 
@@ -131,6 +134,11 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("指摘フェーズ");
             pointOut.ShowPanel();
+        }
+        //プレイヤー交代フェーズ
+        else
+        {
+            playerChange.ShowPlyaerChange();
         }
 
         StartTurn();
