@@ -37,26 +37,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private CardManager cardManager;    //カードを生成
 
-    //PointOut.csに移した
-/*    [Header("指摘選択UI")]
-    [SerializeField] private GameObject accusationPanel;          // 選択肢全体を囲むパネル
-    [SerializeField] private Button accuseOther1Button;           // 他プレイヤー1を指摘するボタン
-    [SerializeField] private TextMeshProUGUI accuseOther1Text;    // ボタン1のテキスト
-    [SerializeField] private Button accuseOther2Button;           // 他プレイヤー2を指摘するボタン
-    [SerializeField] private TextMeshProUGUI accuseOther2Text;    // ボタン2のテキスト
-    [SerializeField] private Button skipAccuseButton;             // 「指摘しない」ボタン
-*/
-
-    //private bool isFirstTurnOfGame = true; // ゲーム開始直後の1ターン目判定用
-
     void Start()
     {
-        /*if (skipAccuseButton != null)
-        {
-            skipAccuseButton.onClick.RemoveAllListeners();
-            skipAccuseButton.onClick.AddListener(pointOut.OnSkipAccusation);
-        }*/
-
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
         pointOut.EnterDicePhase();
         StartTurn();
@@ -83,18 +65,7 @@ public class GameManager : MonoBehaviour
             cardManager.DrawHandForCurrentPlayer();
         }
 
-　　　　　// ゲーム最初の1ターン目は誰もカードを使っていないため、指摘フェーズをスキップ
-        /*if (isFirstTurnOfGame)
-        {
-            isFirstTurnOfGame = false;
-            EnterDicePhase();
-        }
-        else
-        {
-            //pointOut.ShowPanel();   //指摘フェーズデバッグのためここに置いてる
-            //StartAccusationPhase();
-            //currentPhase = TurnPhase.WaitingForDice;  //デバッグ用
-        }*/
+        //pointOut.ShowPanel(); //デバッグ用
     }
 
     public void OnDiceRolled(int diceValue)
@@ -196,95 +167,4 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-
-    // 以降はPointOut.csに移したため消してもいいけど一応残しておく
-    // 指摘フェーズを開始し、他2人のボタンをセットアップする
-/*    private void StartAccusationPhase()
-    {
-        currentPhase = TurnPhase.AccusationPhase;
-
-        if (accusationPanel == null)
-        {
-            EnterDicePhase();
-            return;
-        }
-
-        accusationPanel.SetActive(true);
-        
-        // 自分以外の2人をリストアップ
-        List<Player> otherPlayers = new List<Player>();
-        for (int i = 0; i < players.Length; i++)
-        {
-            if (i != currentTurn && players[i] != null)
-            {
-                otherPlayers.Add(players[i]);
-            }
-        }
-
-        // 他プレイヤー1のボタン設定
-        if (otherPlayers.Count >= 1 && accuseOther1Button != null)
-        {
-            Player target1 = otherPlayers[0];
-            if (accuseOther1Text != null) accuseOther1Text.text = $"{target1.name} を指摘";
-            accuseOther1Button.onClick.RemoveAllListeners();
-            accuseOther1Button.onClick.AddListener(() => OnAccusePlayer(target1));
-        }
-
-        // 他プレイヤー2のボタン設定
-        if (otherPlayers.Count >= 2 && accuseOther2Button != null)
-        {
-            Player target2 = otherPlayers[1];
-            if (accuseOther2Text != null) accuseOther2Text.text = $"{target2.name} を指摘";
-            accuseOther2Button.onClick.RemoveAllListeners();
-            accuseOther2Button.onClick.AddListener(() => OnAccusePlayer(target2));
-        }
-    }*/
-
-// 「指摘しない」を選んだときの処理
-/*    public void OnSkipAccusation()
-    {
-        if (currentPhase != TurnPhase.AccusationPhase) return;
-
-        Debug.Log($"プレイヤー {currentTurn + 1} は指摘を行いませんでした。");
-        EnterDicePhase();
-    }*/
-
-    // どちらか片方を指摘したときの判定処理
-/*    public void OnAccusePlayer(Player targetPlayer)
-    {
-        if (currentPhase != TurnPhase.AccusationPhase) return;
-
-        Player currentPlayer = GetCurrentPlayer();
-        Debug.Log($"プレイヤー {currentTurn + 1} が {targetPlayer.name} を指摘しました！");
-
-        if (targetPlayer.HasUsedTargetCard())
-        {
-            // 【指摘成功】対象者がイカサマカード（ID 5〜10）を使っていた場合
-            Debug.Log($"【指摘成功！】{targetPlayer.name} はイカサマカード（ID:{targetPlayer.lastUsedCardId}）を使用していました！");
-
-            // 二重指摘を防ぐため記録をリセット
-            targetPlayer.ResetLastUsedCard();
-
-            // ここに指摘成功時のボーナス・ペナルティを追加できる
-        }
-        else
-        {
-            // 【指摘失敗】対象者はイカサマカードを使っていなかった場合
-            Debug.Log($"【指摘失敗…】{targetPlayer.name} はイカサマカードを使っていませんでした。ペナルティで出目−４！");
-
-            // 失敗（冤罪）時のペナルティ出目-4
-            currentPlayer.diceModifier -=4;
-        }
-        EnterDicePhase();
-    }*/
-
-/*    private void EnterDicePhase()
-    {
-        if (accusationPanel != null)
-        {
-            accusationPanel.SetActive(false);
-        }
-        currentPhase = TurnPhase.WaitingForDice;
-        Debug.Log($"プレイヤー {currentTurn + 1} はサイコロを振れます。");
-    }*/
 }

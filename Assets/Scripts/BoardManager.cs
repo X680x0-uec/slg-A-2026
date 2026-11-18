@@ -173,17 +173,17 @@ public class BoardManager : MonoBehaviour
     }
 
     public int GetTotalWaypoints() //Player.csに対してマス数の合計を返す
-{
-    // 配列が作られているか確認（Nullチェック）
-    if (generatedWaypoints != null)
     {
-        return generatedWaypoints.Length; // マスの個数を返す
+        // 配列が作られているか確認（Nullチェック）
+        if (generatedWaypoints != null)
+        {
+            return generatedWaypoints.Length; // マスの個数を返す
+        }
+        else
+        {
+            return 0; // まだ作られていなければ 0 を返す
+        }
     }
-    else
-    {
-        return 0; // まだ作られていなければ 0 を返す
-    }
-}
 
     public GridEffect GetGridEffect(int index) //Player.csに対してindexマス目の種類(効果)を返す。
     {

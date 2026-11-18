@@ -1366,11 +1366,11 @@ RectTransform:
   - {fileID: 164879243}
   - {fileID: 272707549}
   - {fileID: 595209559}
-  - {fileID: 1097244367}
-  - {fileID: 1488678410}
   - {fileID: 2073152811}
   - {fileID: 1201005281}
   - {fileID: 1849444496}
+  - {fileID: 1097244367}
+  - {fileID: 1488678410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
