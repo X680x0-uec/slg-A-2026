@@ -156,6 +156,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         }
         cardManager.destroyList.Clear();
         gameManager.ExecutePlayerMove(); // カード効果適用後、プレイヤーの行動（移動 or 移動停止）を実行
+        gameManager.currentPhase = TurnPhase.WaitingForDice;    //サイコロを振れるようにする
     }
 
     //public void OnPointerUp(PointerEventData eventData)
