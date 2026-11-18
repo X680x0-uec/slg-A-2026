@@ -9,6 +9,8 @@ using System.Collections.Generic;
 public class PointOut : MonoBehaviour
 {
     [SerializeField] public GameManager gameManager;
+    [SerializeField] private PlayerChange playerChange;
+
 
     [SerializeField] private GameObject accusationPanel;
     [SerializeField] private Button accuseOther1Button;     // 他プレイヤー1を指摘するボタン
@@ -133,13 +135,6 @@ public class PointOut : MonoBehaviour
         return null;
     }
 
-    public void EnterDicePhase()
-    {
-        gameManager.currentPhase = TurnPhase.WaitingForDice;
-
-        gameManager.StartTurn();
-    }
-
     public void NextPointOut()
     {
         if (accusationPanel != null)
@@ -157,7 +152,7 @@ public class PointOut : MonoBehaviour
         {
             gameManager.currentTurn = (gameManager.currentTurn + 1) % gameManager.players.Length;
             //最後の人の指摘が終わったら盤面に戻る
-            EnterDicePhase();
+            playerChange.ShowPlyaerChange();
         }
     }
 }
