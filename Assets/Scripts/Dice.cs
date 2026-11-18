@@ -8,7 +8,7 @@ public class Dice : MonoBehaviour
     private GameManager gameManager;    // GameManagerオブジェクトを記憶
     [SerializeField] private CardScript cardScript;      // 出目をCardScriptに保存
     [SerializeField] private TextMeshProUGUI diceText;
-    [SerializeField] private GameObject diceUiPar;
+    [SerializeField] private GameObject diceUiParent;
     [SerializeField] private Sprite[] diceSprites; //サイコロの出目の画像を格納
     private GameObject[] diceUIs; //サイコロのオブジェクト
     private Image[] diceUIImages; //サイコロのImageコンポーネント
@@ -19,14 +19,14 @@ public class Dice : MonoBehaviour
     {
         gameManager = FindAnyObjectByType<GameManager>();
 
-        int count = diceUiPar.transform.childCount; //サイコロの画像を取得
+        int count = diceUiParent.transform.childCount; //サイコロの画像を取得
         diceUIs = new GameObject[count];
         diceUIImages = new Image[count];
 
 
         for (int i = 0; i < count; i++)
         {
-            diceUIs[i] = diceUiPar.transform.GetChild(i).gameObject; //
+            diceUIs[i] = diceUiParent.transform.GetChild(i).gameObject; //
             diceUIImages[i] = diceUIs[i].GetComponent<Image>();
         }
     }
