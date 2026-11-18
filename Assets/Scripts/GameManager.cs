@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log($"ゲーム開始 最初は プレイヤー {currentTurn + 1} の番");
-        pointOut.EnterDicePhase();
+        //pointOut.EnterDicePhase();
         StartTurn();
     }
 

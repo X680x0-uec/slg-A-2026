@@ -565,6 +565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PointOut
   gameManager: {fileID: 589539313}
+  playerChange: {fileID: 1593641967}
   accusationPanel: {fileID: 1849444495}
   accuseOther1Button: {fileID: 1049339572}
   accuseOther1Text: {fileID: 403326269}
