@@ -19,6 +19,9 @@ public class PointOut : MonoBehaviour
     [SerializeField] private TMP_Text accuseOther2Text;     // ボタン2のテキスト
     [SerializeField] private Button skipAccuseButton;       // 「指摘しない」ボタン
     [SerializeField] private TMP_Text WhoText;              // 誰のターンかを表示
+    [SerializeField] private TMP_Text other1MoveText;       // 他プレイヤー1の進んだマス数表示用
+    [SerializeField] private TMP_Text other2MoveText;       // 他プレイヤー2の進んだマス数表示用
+
 
     private int PointOutTurn;   //誰の指摘の番か
 
@@ -41,6 +44,9 @@ public class PointOut : MonoBehaviour
         //表示する
         accusationPanel.SetActive(true);
 
+Player currentPlayer = GetCurrentPlayer();
+        bool isMoveHidden = currentPlayer != null && currentPlayer.IsInfoHidden(currentPlayer.hideOtherLastMovePermanent);
+
         // 自分以外の2人をリストアップ
         List<Player> otherPlayers = new List<Player>();
         for (int i = 0; i < gameManager.players.Length; i++)
@@ -62,6 +68,11 @@ public class PointOut : MonoBehaviour
         {
             Player target1 = otherPlayers[0];
             if (accuseOther1Text != null) accuseOther1Text.text = $"{target1.name} を指摘";
+            if (other1MoveText != null)
+            {
+                string stepStr = FormatMoveStepsText(target1, currentPlayer, isMoveHidden);
+                other1MoveText.text = $"{target1.name} が進んだマス: {stepStr}";
+            }
             accuseOther1Button.onClick.RemoveAllListeners();
             accuseOther1Button.onClick.AddListener(() => OnAccusePlayer(target1));
         }
@@ -71,11 +82,27 @@ public class PointOut : MonoBehaviour
         {
             Player target2 = otherPlayers[1];
             if (accuseOther2Text != null) accuseOther2Text.text = $"{target2.name} を指摘";
+            if (other2MoveText != null)
+            {
+                string stepStr = FormatMoveStepsText(target2, currentPlayer, isMoveHidden);
+                other2MoveText.text = $"{target2.name} が進んだマス: {stepStr}";
+            }
             accuseOther2Button.onClick.RemoveAllListeners();
             accuseOther2Button.onClick.AddListener(() => OnAccusePlayer(target2));
         }
     }
 
+    private string FormatMoveStepsText(Player target, Player viewer, bool isHidden)
+    {
+        int steps = target.GetDisplayMoveStepsForOthers();
+        string rawText = steps >= 0 ? $"+{steps}マス" : $"{steps}マス";
+
+        if (viewer != null)
+        {
+            return viewer.MaskTextIfHidden(rawText, isHidden);
+        }
+        return rawText;
+    }
 
     // 「指摘しない」を選んだときの処理
     public void OnSkipAccusation()

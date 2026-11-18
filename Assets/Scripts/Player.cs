@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
     private Dice dice;
 
     [SerializeField]int playerCurrentLocation = 0; //プレイヤーの現在位置
-    public int PlayerCurrentLocation => playerCurrentLocation; // ★外部（GameManager）から現在位置を取得できるようにプロパティを追加
+    public int PlayerCurrentLocation => playerCurrentLocation; // 外部（GameManager）から現在位置を取得できるようにプロパティを追加
+    private int turnStartLocation = 0; // そのターンの移動開始前の位置
     public DiceType NextDiceType { get; set; } = DiceType.Normal; // 次に振るダイスの種類(通常はNormal)
     private List<GameObject> myCards = new List<GameObject>();  // プレイヤー個別の手札リスト
     public List<GameObject> MyCards => myCards;
@@ -37,11 +38,12 @@ public class Player : MonoBehaviour
 
     public void Move(int spaces)
     {
+        turnStartLocation = playerCurrentLocation; //追加：移動前の位置を記録
         // 一瞬で移動していた処理をコルーチン呼び出しに変更
         StartCoroutine(MoveRoutine(spaces, triggerEffectOnComplete: true));
     }
 
-    // ★ なめらかに移動する処理（コルーチン）
+    // なめらかに移動する処理（コルーチン）
     private IEnumerator MoveRoutine(int spaces, bool triggerEffectOnComplete = false)
     {
         int totalWaypoints = boardManager.GetTotalWaypoints();
@@ -76,6 +78,7 @@ public class Player : MonoBehaviour
         {
             playerCurrentLocation = totalWaypoints - 1; // 位置をゴールのマスに固定
             Debug.Log("ゴール！");
+            RecordTurnMovedSteps(); //：ゴール時も移動マス数を記録
             gameManager.OnPlayerMoveComplete();
             yield break;
         }
@@ -101,6 +104,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("【マス効果無効】カードの効果により、このマスの効果は無効化されました！");
             ResetTurnCardEffects(); // 使い終わったのでリセット
+            RecordTurnMovedSteps(); // マス効果無効時も記録
             if (gameManager != null) gameManager.OnPlayerMoveComplete();
             yield break; // ここで終了
         }
@@ -145,6 +149,7 @@ public class Player : MonoBehaviour
 
         transform.position = boardManager.GetWaypointPosition(playerCurrentLocation);  // マス効果適用後の最終位置にコマを再配置
         ResetTurnCardEffects();
+        RecordTurnMovedSteps(); //すべての移動・効果処理後に記録
         gameManager.OnPlayerMoveComplete(); // すべての移動・効果処理が終わってからターン終了
     }
     
@@ -180,6 +185,7 @@ public bool HasUsedTargetCard()
     // 【通常カード3：移動停止】移動せず現在地のマス効果だけ発動する
     public void StayAndTriggerEffect()
     {
+        turnStartLocation = playerCurrentLocation; // 移動停止時も開始位置を記録
         Debug.Log("【移動停止】現在地に留まった場合、その現在地のマス効果を発動する");
         StartCoroutine(ApplyGridEffectRoutine());
     }
@@ -243,13 +249,40 @@ public bool HasUsedTargetCard()
     public int lastDisguisedMoveSteps = 0;       // 他プレイヤーに見せる表示用移動マス数（2〜12）
 
     /// <summary>
+    /// そのターンに最終的に進んだ（変化した）マス数を記録する
+    /// </summary>
+    public void RecordTurnMovedSteps()
+    {
+        int actualSteps = playerCurrentLocation - turnStartLocation;
+        lastTrueMoveSteps = actualSteps;
+
+        // 6番イカサマ（出目偽装）が有効な場合は 2〜12 の偽装値をセット
+        if (disguiseMoveRounds > 0)
+        {
+            lastDisguisedMoveSteps = Random.Range(2, 13);
+        }
+        else
+        {
+            lastDisguisedMoveSteps = actualSteps;
+        }
+    }
+
+    /// <summary>
+    /// 他プレイヤーに見せる用の直前ターン移動マス数を取得
+    /// </summary>
+    public int GetDisplayMoveStepsForOthers()
+    {
+        return (disguiseMoveRounds > 0) ? lastDisguisedMoveSteps : lastTrueMoveSteps;
+    }
+
+    /// <summary>
     /// 神経妨害の「全代償状態」か、その個別代償を受けているかを判定（使用者の閲覧バフも考慮）
     /// </summary>
     public bool IsInfoHidden(bool specificHideCondition)
     {
-        if (revealAllInfoRounds > 0) return false;　// 神経妨害の使用者バフ中なら、すべての情報喪失を貫通して見られる
+        if (revealAllInfoRounds > 0) return false; // 神経妨害の使用者バフ中なら、すべての情報喪失を貫通して見られる
 
-        if (afflictedByNerveRounds > 0) return true;　// 神経妨害を他プレイヤーから受けている間は全情報が隠れる
+        if (afflictedByNerveRounds > 0) return true; // 神経妨害を他プレイヤーから受けている間は全情報が隠れる
 
         return specificHideCondition;
     }
