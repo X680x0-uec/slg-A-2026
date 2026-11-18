@@ -257,11 +257,15 @@ public class GameManager : MonoBehaviour
         int modifiedDice = CardScript.DiceValue + currentFalsifyDelta;
         int targetGrid = Mathf.Clamp(p.PlayerCurrentLocation + modifiedDice + p.diceModifier, 0, 90);
 
+        // 追加：自分の出目が隠されているか判定（代償や神経妨害を考慮）
+        bool isDiceHidden = p.IsInfoHidden(p.hideOwnDicePermanent);
+        string totalStr = p.MaskTextIfHidden(modifiedDice.ToString(), isDiceHidden);
+
         // 代償でマス番号が隠されているか判定
         bool isGridHidden = p.IsInfoHidden(p.hideGridInfoPermanent);
         string gridStr = p.MaskTextIfHidden($"{targetGrid}番マス", isGridHidden);
 
-        falsifyValueText.text = $"出目補正: {currentFalsifyDelta:+#;-#;0} (合計: {modifiedDice})\n停止予定: {gridStr}";
+        falsifyValueText.text = $"出目補正: {currentFalsifyDelta:+#;-#;0} (合計: {totalStr})\n停止予定: {gridStr}";
     }
 
     // UIの「決定」ボタンから呼ぶ
