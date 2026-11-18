@@ -1026,6 +1026,8 @@ MonoBehaviour:
   getCardCount: 3
   minEffectValue: 3
   maxEffectValue: 3
+  returnCheatingcardCount: 2
+  forcedCheatingCount: 3
   specialGrids:
   - gridIndex: 3
     effect: 4
@@ -1120,6 +1122,9 @@ MonoBehaviour:
   pointOut: {fileID: 374333048}
   playerChange: {fileID: 1593641967}
   cardManager: {fileID: 28280355}
+  diceFalsifyPanel: {fileID: 0}
+  falsifyValueText: {fileID: 0}
+  realityDenialPanel: {fileID: 0}
 --- !u!4 &589539314
 Transform:
   m_ObjectHideFlags: 0
@@ -2070,14 +2075,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   lastUsedCardId: -1
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0
@@ -3027,14 +3037,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   lastUsedCardId: -1
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0
@@ -3173,14 +3188,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
   moveSpeed: 8
   diceModifier: 0
   isStayAction: 0
   isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
   lastUsedCardId: -1
   usedCheatingCards: 000000000000
   goalIndex: 49
-  hideOwnDiceRounds: 0
+  hideOwnDicePermanent: 0
   hideRemainGridPermanent: 0
   restrictDice1To2Rounds: 0
   hideGridDetailPermanent: 0
@@ -3440,7 +3460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1384776845
 RectTransform:
   m_ObjectHideFlags: 0
