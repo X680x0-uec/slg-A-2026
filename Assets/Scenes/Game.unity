@@ -2587,6 +2587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceUI
   diceManager: {fileID: 1968807064}
+  gameManager: {fileID: 0}
   diceSprites:
   - {fileID: 117070855636090705, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
   - {fileID: 1854267033, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
@@ -8356,12 +8357,16 @@ MonoBehaviour:
   diceText: {fileID: 595209557}
   diceUiPar: {fileID: 272707548}
   diceSprites:
-  - {fileID: 5450376192650610091, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 1526066181, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -807173463, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -1604454040, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: 2073636114, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
-  - {fileID: -2055672618, guid: 88c9ce407ec61d34f85b3c2da086f33a, type: 3}
+  - {fileID: 117070855636090705, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1854267033, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1941579674, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 705799037, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1898572215, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -304855230, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 116342971, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: 1898148024, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -2045188393, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
+  - {fileID: -1096983019, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
   audioSource: {fileID: 1968807066}
   rollSE: {fileID: 8300000, guid: 82810a37781d12448a42de28b16154c9, type: 3}
   isDiceRolling: 0
@@ -8621,6 +8626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceUI
   diceManager: {fileID: 1968807064}
+  gameManager: {fileID: 0}
   diceSprites:
   - {fileID: 117070855636090705, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}
   - {fileID: 1854267033, guid: 5e1e2205d0b121a43b968e5a521ef5f7, type: 3}

@@ -41,6 +41,17 @@ public class PointOut : MonoBehaviour
     {
         gameManager.currentPhase = TurnPhase.AccusationPhase;
 
+        // 指摘パネルを開くとき、画面にカードが残っていたらすべて消す
+        CardManager cm = FindAnyObjectByType<CardManager>();
+        if (cm != null)
+        {
+            foreach (GameObject c in cm.destroyList)
+            {
+                if (c != null) Destroy(c);
+            }
+            cm.destroyList.Clear();
+        }
+
         //表示する
         accusationPanel.SetActive(true);
 
