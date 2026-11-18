@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PointOut pointOut;         //PointOut.csにアクセス
     [SerializeField] private PlayerChange playerChange; //PlayerChange.csにアクセス
 
+    [SerializeField] private Dice diceManager;    //DiceManager
     [SerializeField] private CardManager cardManager;    //カードを生成
 
     void Start()
@@ -55,10 +56,12 @@ public class GameManager : MonoBehaviour
         if (currentPlayer != null)
         {
             currentPlayer.ResetLastUsedCard();
+            
         }
 
         UpdateActiveCamera();
         UpdateRemainingGridUI();
+        diceManager.RefreshDiceResult();
 
         if (cardManager != null)
         {

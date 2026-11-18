@@ -17,7 +17,7 @@ public class Dice : MonoBehaviour
     [SerializeField] private bool isDiceRolling = false;
     public bool IsDiceRolling => isDiceRolling;
     
-    void Start()
+    void Awake()
     {
         gameManager = FindAnyObjectByType<GameManager>();
 
@@ -41,7 +41,11 @@ public class Dice : MonoBehaviour
             Debug.Log("コマが移動中またはカードが未選択のため、ダイスは振れません");
             return;
         }
+
+        Player currentPlayer = gameManager.GetCurrentPlayer();
         // GameManager から現在のプレイヤー（インスタンス）を取得する
+        diceUIs[0].GetComponent<DiceUI>().ChangeDiceType(currentPlayer.NextDiceType);
+        diceUIs[1].GetComponent<DiceUI>().ChangeDiceType(currentPlayer.NextDiceType);
 
         if (!isDiceRolling)
         {
@@ -97,6 +101,25 @@ public class Dice : MonoBehaviour
             if (diceText != null) 
             {
                 diceText.text = $"DICE: {dice1} + {dice2} = {totalValue}";
+                
+                if (dice1 == -1)
+                {
+                    diceUIImages[0].sprite = diceSprites[8];
+                }
+                else
+                {
+                    diceUIImages[0].sprite = diceSprites[dice1 - 1];
+                }
+
+                if (dice2 == -1)
+                {
+                    diceUIImages[1].sprite = diceSprites[8];
+                }
+                else
+                {
+                    diceUIImages[1].sprite = diceSprites[dice2 - 1];
+                }
+
             } 
             gameManager.OnDiceRolled(totalValue);
             cardScript.saveDiceValue(totalValue);
@@ -115,5 +138,13 @@ public class Dice : MonoBehaviour
         {
             diceText.text += $" <color=red>{effectValue}</color>";
         }
+    }
+
+    public void RefreshDiceResult()
+    {
+        diceText.text = "→";
+        diceUIImages[0].sprite = diceSprites[0];
+        diceUIImages[1].sprite = diceSprites[5];
+
     }
 }
