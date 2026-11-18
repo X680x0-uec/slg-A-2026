@@ -10,6 +10,8 @@ public class DiceUI : MonoBehaviour
     [SerializeField] private Sprite[] diceSprites;
     private UnityEngine.UI.Image diceImage;
 
+    [SerializeField]private DiceType currentDiceType;
+
     private int diceAnimeFlame;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,9 +27,21 @@ public class DiceUI : MonoBehaviour
             diceAnimeFlame = (diceAnimeFlame + 1) % 2;
             if(diceAnimeFlame != 0)
             {
-                diceImage.sprite = diceSprites[Random.Range(0,6)];
+                if(currentDiceType == DiceType.Normal)
+                {
+                    diceImage.sprite = diceSprites[Random.Range(0,6)];
+                }
+                else if(currentDiceType == DiceType.Special)
+                {
+                    diceImage.sprite = diceSprites[Random.Range(0,8)];
+                }
+                
             }
                 
         }
+    }
+    public void ChangeDiceType(DiceType changeTo)
+    {
+        currentDiceType = changeTo;
     }
 }
