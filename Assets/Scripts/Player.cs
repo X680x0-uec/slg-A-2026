@@ -118,6 +118,8 @@ public class Player : MonoBehaviour
         // イカサマ3番（現実拒否）が使われていたら、止まったマスに関係なく選んだ効果を発動！
         if (hasForcedGridEffect)
         {
+            Player currentPlayer = gameManager.GetCurrentPlayer();
+            currentPlayer.hasForcedGridEffect = false;
             effect = forcedGridEffect;
             value = forcedGridValue;
             if (boardManager != null)
