@@ -28,7 +28,7 @@ public class BoardManager : MonoBehaviour
     public GameObject gridPrefab; //AssetsのGridSquareを雛型とする
 
     [Header("盤面生成")]
-    [SerializeField] private int totalGridCount = 91; // 生成したいマスの合計数
+    [SerializeField] public int totalGridCount = 91; // 生成したいマスの合計数
     [SerializeField] private float gridSpacing = 2f; // マスとマスの間隔（X軸方向）
     [SerializeField] private Vector3 startPosition = Vector3.zero; // スタート位置
 

@@ -310,6 +310,77 @@ MonoBehaviour:
   dontUseButton: {fileID: 1417218648}
   gameManager: {fileID: 0}
   destroyList: []
+--- !u!1 &31527365
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31527366}
+  - component: {fileID: 31527367}
+  m_Layer: 0
+  m_Name: PlayerCs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &31527366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31527365}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1008035921}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &31527367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31527365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d6db794fd00f5644bdea5e98c8c59c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  playerCurrentLocation: 0
+  extraCardCount: 0
+  forceCheatingNextTurn: 0
+  moveSpeed: 8
+  isCpu: 0
+  diceModifier: 0
+  isStayAction: 0
+  isGridEffectNullified: 0
+  hasForcedGridEffect: 0
+  forcedGridEffect: 0
+  forcedGridValue: 0
+  lastUsedCardId: -1
+  usedCheatingCards: 000000000000
+  goalIndex: 49
+  hideOwnDicePermanent: 0
+  hideRemainGridPermanent: 0
+  restrictDice1To2Rounds: 0
+  hideGridDetailPermanent: 0
+  hideRankPermanent: 0
+  hideGridInfoPermanent: 0
+  skipDiceNextRound: 0
+  hideOtherLastMovePermanent: 0
+  disguiseMoveRounds: 0
+  revealAllInfoRounds: 0
+  afflictedByNerveRounds: 0
+  lastTrueMoveSteps: 0
+  lastDisguisedMoveSteps: 0
 --- !u!1 &164879242
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,7 +2181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardManager
   gridPrefab: {fileID: 4029603860997610514, guid: 9416ad977cfb3704d81d9ceeda239a5b, type: 3}
-  totalGridCount: 91
+  totalGridCount: 21
   gridSpacing: 2
   startPosition: {x: 0, y: 0, z: 0}
   useRandomMode: 1
@@ -2215,6 +2286,7 @@ MonoBehaviour:
   otherRemainingGridText: {fileID: 1488678411}
   pointOut: {fileID: 374333048}
   playerChange: {fileID: 1593641967}
+  playerCs: {fileID: 31527367}
   cardManager: {fileID: 28280355}
   skipCardButton: {fileID: 800068147}
   diceFalsifyPanel: {fileID: 983528340}
@@ -2472,10 +2544,10 @@ RectTransform:
   - {fileID: 595209559}
   - {fileID: 800068148}
   - {fileID: 2073152811}
+  - {fileID: 1849444496}
   - {fileID: 1097244367}
   - {fileID: 1488678410}
   - {fileID: 1201005281}
-  - {fileID: 1849444496}
   - {fileID: 1384776845}
   - {fileID: 983528341}
   - {fileID: 380092650}
@@ -3628,6 +3700,7 @@ Transform:
   - {fileID: 1593641966}
   - {fileID: 2041600931}
   - {fileID: 169939727}
+  - {fileID: 31527366}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1015246287

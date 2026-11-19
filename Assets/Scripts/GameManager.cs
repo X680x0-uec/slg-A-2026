@@ -181,7 +181,7 @@ public class GameManager : MonoBehaviour
     {
         Player currentPlayer = players[currentTurn];
         int currentLocation = currentPlayer.PlayerCurrentLocation;
-        
+        Debug.Log($"ゴール：{currentPlayer.goalIndex}, 現在地：{currentLocation}");
         int remainingGrids = Mathf.Max(0, currentPlayer.goalIndex - currentLocation);
 
         // 強行突破(2番)代償の残りマス文字化け判定
@@ -328,5 +328,4 @@ public class GameManager : MonoBehaviour
         Debug.Log($"【イカサマ3】現実拒否確定：{chosenEffect} の効果を発動予約（代償：マス効果詳細不可視）");
         ExecutePlayerMove();
     }
-    
 }

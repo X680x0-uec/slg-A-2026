@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
     {
         gameManager = Object.FindAnyObjectByType<GameManager>();
         boardManager = Object.FindAnyObjectByType<BoardManager>();
+        goalIndex = boardManager.totalGridCount;
+        Debug.Log($"goalIndex：{goalIndex}");
         dice = Object.FindAnyObjectByType<Dice>();
         // 0番目のマスの位置にプレイヤーを配置
         if (boardManager != null)
