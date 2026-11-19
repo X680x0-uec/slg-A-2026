@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
         {
             cardManager.UpdateCardVisibility();
             cardManager.DrawHandForCurrentPlayer();
+            skipCardButton.SetActive(true);
         }
 
         //pointOut.ShowPanel(); //デバッグ用

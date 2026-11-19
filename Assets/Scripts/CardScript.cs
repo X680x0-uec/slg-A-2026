@@ -88,7 +88,7 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     public void SetDetailPanel(GameObject panel)
     {
         CardDetailPanel = panel;
-        Debug.Log($"Panel設定：{gameObject.GetInstanceID()} / {CardDetailPanel}");
+        //Debug.Log($"Panel設定：{gameObject.GetInstanceID()} / {CardDetailPanel}");
     }
 
     public void SetDetailTexts(TMP_Text nameText, TMP_Text detailText)

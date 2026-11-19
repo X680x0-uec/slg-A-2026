@@ -6890,7 +6890,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1503512888
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8690,8 +8690,6 @@ MonoBehaviour:
   CardDetailPanel: {fileID: 1503512887}
   cardName: {fileID: 0}
   cardDetail: {fileID: 0}
-  UseButton: {fileID: 1934601415}
-  DontUseButton: {fileID: 1417218648}
 --- !u!1 &1869991039
 GameObject:
   m_ObjectHideFlags: 0
