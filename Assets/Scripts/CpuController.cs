@@ -93,7 +93,7 @@ public class CpuController : MonoBehaviour
                 if (cs != null)
                 {
                     Debug.Log($"[CPU] 4. カード使用実行 (index:{idx})");
-                    cs.OnPointerClick(null);
+                    cs.UseCard();
                 }
             }
         }

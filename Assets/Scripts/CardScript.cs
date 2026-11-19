@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 
 public class CardScript : MonoBehaviour, IPointerClickHandler
 {
@@ -16,6 +17,12 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text effects;
 
+    [Header("カードの詳細")]
+    [SerializeField] private GameObject CardDetailPanel;
+    [SerializeField] private TMP_Text cardName;
+    [SerializeField] private TMP_Text cardDetail;
+    //[SerializeField] private Button UseButton;
+    //[SerializeField] private Button DontUseButton;
 
     void Start()
     {
@@ -27,6 +34,16 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         {
             effects.gameObject.SetActive(true);
         }
+        if (CardDetailPanel != null)
+        {
+            CardDetailPanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("CardDetailPanelが未設定：" + gameObject.name, this);
+        }
+        //UseButton.onClick.AddListener(() => OnUseButton());
+        //DontUseButton.onClick.AddListener(() => OnDontUseButton());
     }
     
     //Diceが振られたときに呼び出され、値が更新される
@@ -50,8 +67,58 @@ public class CardScript : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    //カードがクリックされたとき詳細を表示
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!gameManager.CanUseCard) return;
+
+        CardDetailPanel.SetActive(true);
+
+        Debug.Log("クリックされたときcardId：" + cardId);
+
+        if (cardData != null && cardName != null && cardDetail != null)
+        {
+            cardName.text = cardData.CardDataList[cardId].CardName;
+            cardDetail.text = cardData.CardDataList[cardId].Explain;
+        }
+
+        cardManager.SetSelectedCard(this);
+    }
+
+    public void SetDetailPanel(GameObject panel)
+    {
+        CardDetailPanel = panel;
+        Debug.Log($"Panel設定：{gameObject.GetInstanceID()} / {CardDetailPanel}");
+    }
+
+    public void SetDetailTexts(TMP_Text nameText, TMP_Text detailText)
+    {
+        cardName = nameText;
+        cardDetail = detailText;
+    }
+
+/*    public void SetDetailButtons(Button use, Button dontUse)
+    {
+        UseButton = use;
+        DontUseButton = dontUse;
+    }
+
+    public void OnUseButton()
+    {
+        Debug.Log("OnUseButtonのcardId：" + cardId);
+        CardDetailPanel.SetActive(false);
+        UseCard();
+    }
+
+    public void OnDontUseButton()
+    {
+        CardDetailPanel.SetActive(false);
+    }
+*/
+    //カードを使用する
+    public void UseCard()
+    {
+        Debug.Log("UseCardのcardId：" + cardId);
         if (!gameManager.CanUseCard) return; // 指摘フェーズ中orサイコロが振られてないときカードを使えないようにする
 
         Player currentPlayer = gameManager.GetCurrentPlayer();

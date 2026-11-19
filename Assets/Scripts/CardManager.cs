@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
+using UnityEngine.UI;
 
 /*public enum CardProp //カードの属性
 {
@@ -27,16 +29,54 @@ public class CardManager : MonoBehaviour
     public GameObject cardPrefab; //AssetsのCardを雛型とする
 
     public Canvas canvas;
+    
+    [Header("カード詳細")]
+    [SerializeField] private GameObject cardDetailPanel;
+    [SerializeField] private TMP_Text cardNameText;
+    [SerializeField] private TMP_Text cardDetailText;
+    [SerializeField] private Button useButton;
+    [SerializeField] private Button dontUseButton;
+    
     [Header("ゲーム管理")]
     [SerializeField] private GameManager gameManager;
+
+    private CardScript selectedCard;
 
     void Start()
     {
         if (gameManager == null) gameManager = Object.FindAnyObjectByType<GameManager>();
+
+        useButton.onClick.AddListener(OnUseButton);
+        dontUseButton.onClick.AddListener(OnDontUseButton);
+
+        cardDetailPanel.SetActive(false);
     }
 
     public List<GameObject> destroyList = new List<GameObject>();  //全消去するために生成した瞬間にこのリストに入れる
 
+    // クリックされたカードを記録して詳細を表示する
+    public void SetSelectedCard(CardScript card)
+    {
+        selectedCard = card;
+    }
+
+    // 使用ボタン
+    private void OnUseButton()
+    {
+        if (selectedCard == null) return;
+
+        cardDetailPanel.SetActive(false);
+        selectedCard.UseCard();
+
+        selectedCard = null;
+    }
+
+    // 使用しないボタン
+    private void OnDontUseButton()
+    {
+        cardDetailPanel.SetActive(false);
+        selectedCard = null;
+    }
 
     // 現在のプレイヤーの山札（通常0〜4 ＋ 未使用のイカサマ5〜10）からランダムに3枚引いて手札にする
     public void DrawHandForCurrentPlayer()
@@ -109,11 +149,15 @@ public class CardManager : MonoBehaviour
             Vector3 pos = new Vector3(startX + (i * 110f), -150f, 0f);
             GameObject cardObj = Instantiate(cardPrefab, pos, Quaternion.identity);
             cardObj.transform.SetParent(canvas.transform, false);
+            cardObj.transform.SetAsFirstSibling();
 
             CardScript script = cardObj.GetComponent<CardScript>();
             if (script != null)
             {
                 script.SetCard(pickedCardId);
+                script.SetDetailPanel(cardDetailPanel);
+                script.SetDetailTexts(cardNameText, cardDetailText);
+                //script.SetDetailButtons(useButton, dontUseButton);
             }
 
             destroyList.Add(cardObj);

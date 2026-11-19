@@ -11,7 +11,7 @@ public class CardData : ScriptableObject
 public class CardParam
 {
     //リストの添え字をカード番号とする
-    [SerializeField] private string cardName;       //カードの名前
+    [SerializeField] public string cardName;       //カードの名前
     [SerializeField] public bool isUsed;        //使われたかどうか
     [SerializeField] public int PulsTurn;       //残り何ターン持続するか（効果）
     [SerializeField] public int MinusTurn;      //残り何ターン持続するか（代償）
